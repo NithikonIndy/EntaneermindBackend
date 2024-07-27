@@ -5,13 +5,16 @@ import {
   graphappointmentforgradelevel,
   graphappointmentforbachelordegree,
   graphappointmentformajor,
-  graphevaluation
+  graphevaluation,
+  
 }
   from './controller/graph';
 import {
   getinformationusers,
   listinformation,
-  listinformationdetail
+  listinformationdetail,
+  detailinformation,
+  updateinformation
 }
   from "./controller/userinformation"
 
@@ -74,6 +77,15 @@ app.group(
     .post('/listdetail', async (request) => {
       const { studentid } = request.body;
       return await listinformationdetail({ studentid });
+    })
+    .post('/detailinfor/:id', async (request) => {
+      const { id } = request.params;
+      return await detailinformation({ id });
+    })
+    .put('/editinfor/:id', async (request) => {
+      const { details_consultation, mental_health_checklist, mental_risk_level } = request.body;
+      const { id } = request.params;
+      return await updateinformation({ details_consultation, mental_health_checklist, mental_risk_level, id });
     })
 );
 

@@ -80,4 +80,67 @@ export const getinformationusers = async () => {
     }
   };
 
+  export const detailinformation = async (request) => {
+    let client = await pool.connect();
+    try {
+      const { id } = request;
+      if (!id) {
+        return { message: "Please provide a valid ID" };
+      }
+      const text = `SELECT u.personid, u.firstname_lastname, u.studentid, u.phone, u.major, u.major, u.gender, 
+        ucr.topic, u.facebookurl, ir.details_consultation, ir.mental_health_checklist, ir.mental_risk_level, 
+        ucr.start_datetime, ucr.end_datetime, ucr.room 
+        FROM users u 
+        JOIN user_conseling_room1 ucr ON u.personid = ucr.personid 
+        JOIN informationusers_room1 ir ON ucr.event_id = ir.event_id 
+        WHERE ucr.event_id = $1`;
+      
+      const values = [id];
+      const result = await client.query(text, values); // Using parameterized query for security
+  
+      return result.rows;
+    } catch (error) {
+      console.error('Error executing query:', error);
+      return { error: 'Failed to fetch data' };
+    } finally {
+      if (client) {
+        client.release(); // Ensure the connection is released
+      }
+    }
+  };
+
+  export const updateinformation = async (request) => {
+    let client = await pool.connect();
+    try {
+      const { details_consultation, mental_health_checklist, mental_risk_level ,id} = request;
+
+      
+      if (!id) {
+        return { message: "Please provide a valid ID" };
+      }
+      
+      const text = `UPDATE informationusers_room1 
+                     SET details_consultation = $1, 
+                         mental_health_checklist = $2, 
+                         mental_risk_level = $3 
+                     WHERE event_id = $4`;
+      const values = [details_consultation, mental_health_checklist, mental_risk_level, id];
+      await client.query(text, values); // Using parameterized query for security
+    
+      return { success: true, message: 'Information updated successfully' };
+    } catch (error) {
+      console.error('Error executing query:', error);
+      return { error: 'Failed to update information' };
+    } finally {
+      if (client) {
+        client.release(); // Ensure the connection is released
+      }
+    }
+  };
+  
+  
+
+
+  
+
   
