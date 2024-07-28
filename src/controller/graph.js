@@ -41,7 +41,7 @@ export const graphappointmentforgradelevel = async (request) => {
     const { startdate, enddate } = request;
 
     if (!startdate && !enddate) {
-      return NextResponse.json({ message: "Please provide a date" }, { status: 400 });
+      return { message: "Please provide a valid data" };
     }
 
     const text = `SELECT u.gradelevel, COUNT(*) AS gradelevel_count
@@ -71,7 +71,7 @@ export const graphappointmentforbachelordegree = async (request) => {
     const { startdate, enddate } = request;
 
     if (!startdate && !enddate) {
-      return NextResponse.json({ message: "Please provide a date" }, { status: 400 });
+      return { message: "Please provide a valid data" };
     }
 
     const text = `SELECT 
@@ -123,7 +123,7 @@ export const graphappointmentformajor = async (request) => {
     const { startdate, enddate } = request;
 
     if (!startdate && !enddate) {
-      return NextResponse.json({ message: "Please provide a date" }, { status: 400 });
+      return { message: "Please provide a valid data" };
     }
 
     const text = `
@@ -155,7 +155,7 @@ export const graphevaluation = async (request) => {
     const { startdate, enddate } = request;
 
     if (!startdate && !enddate) {
-      return NextResponse.json({ message: "Please provide a date" }, { status: 400 });
+      return { message: "Please provide a valid data" };
     }
 
     const text = `

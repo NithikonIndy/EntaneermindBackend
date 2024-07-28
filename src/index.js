@@ -6,7 +6,7 @@ import {
   graphappointmentforbachelordegree,
   graphappointmentformajor,
   graphevaluation,
-  
+
 }
   from './controller/graph';
 import {
@@ -18,6 +18,14 @@ import {
 }
   from "./controller/userinformation"
 
+import {
+  insertaddtodatabase,
+  checkadmin
+} from "./controller/admin"
+
+import { checkdata, insertinformation } from "./controller/user"
+
+import { insertaccesscode, checkaccesscode, deleteautoaccesscode, deletemulaccesscode } from "./controller/accesscode"
 
 const app = new Elysia();
 const port = 3001;
@@ -63,6 +71,7 @@ app.group(
 
 );
 
+// Grouping APIs related to information
 app.group(
   'api/infor',
   {},
@@ -88,6 +97,63 @@ app.group(
       return await updateinformation({ details_consultation, mental_health_checklist, mental_risk_level, id });
     })
 );
+
+
+// Grouping APIs related to information
+app.group(
+  'api/admin',
+  {},
+  (app) => app
+    .post('/firstlogin', async (request) => {
+      const { name, cmuaccount, studentid, organization_name, accounttype } = request.body;
+      return await insertaddtodatabase({ name, cmuaccount, studentid, organization_name, accounttype });
+    })
+    .put('/checkadmin', async (request) => {
+      const { cmuaccount } = request.body;
+      return await checkadmin({ cmuaccount });
+    })
+);
+
+app.group(
+  'api/user',
+  {},
+  (app) => app
+    .post('/checkuser', async (request) => {
+      const { studentId } = request.body;
+      return await checkdata({ studentId });
+    })
+    .put('/firstlogin', async (request) => {
+      const { personid, studentId, phone, major, gender, facebookurl, gradelevel } = request.body;
+      return await insertinformation({ personid, studentId, phone, major, gender, facebookurl, gradelevel });
+    })
+
+);
+
+
+app.group(
+  'api/accesscode',
+  {},
+  (app) => app
+    .post('/insertaccesscode', async (request) => {
+      const { accesscode } = request.body;
+      return await insertaccesscode({ accesscode });
+    })
+    .put('/checkaccesscode', async (request) => {
+      const { accesscode } = request.body;
+      return await checkaccesscode({ accesscode });
+    })
+    .delete('/deleteautoaccesscode', async () => {
+
+      return await deleteautoaccesscode();
+    })
+    .put('/deletemulaccesscode', async (request) => {
+      const { accesscode } = request.body;
+      return await deletemulaccesscode({ accesscode });
+    })
+
+);
+
+
 
 
 
