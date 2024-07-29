@@ -9,6 +9,7 @@ bun create elysia ./elysia-example
 ## Development
 To start the development server run:
 ```bash
+cd backend
 bun run dev
 ```
 
