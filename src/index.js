@@ -43,7 +43,9 @@ import {
 import {
   listhistoryappointment,
   cancelappointmentroom1,
-  getidcalendar1
+  getidcalendar1,
+  checkappointment,
+  addtimeappointment
 } from "./controller/appointment"
 
 import {
@@ -202,6 +204,14 @@ app.group(
     .put('/getidcalendar', async (request) => {
       const { start_datetime, end_datetime } = request.body;
       return await getidcalendar1({ start_datetime, end_datetime });
+    })
+    .put('/checkappointment', async (request) => {
+      const { studentid } = request.body;
+      return await checkappointment({ studentid });
+    })
+    .post('/addtimeappointment', async (request) => {
+      const { start_datetime, end_datetime, personid, topic  } = request.body;
+      return await addtimeappointment({ start_datetime, end_datetime, personid, topic  });
     })
 );
 
