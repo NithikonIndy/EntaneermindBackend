@@ -23,9 +23,33 @@ import {
   checkadmin
 } from "./controller/admin"
 
-import { checkdata, insertinformation } from "./controller/user"
+import {
+  checkdata,
+  insertinformation,
+  afterlogin
+} from "./controller/user"
 
-import { insertaccesscode, checkaccesscode, deleteautoaccesscode, deletemulaccesscode } from "./controller/accesscode"
+import {
+  insertaccesscode,
+  checkaccesscode,
+  deleteautoaccesscode,
+  deletemulaccesscode
+} from "./controller/accesscode"
+
+import {
+  clickevaluation
+} from "./controller/evaluation"
+
+import {
+  listhistoryappointment,
+  cancelappointmentroom1,
+  getidcalendar1
+} from "./controller/appointment"
+
+import {
+  cancelappointmentroom2,
+  getidcalendar2
+} from "./controller/appointment2"
 
 const app = new Elysia();
 const port = 3001;
@@ -114,6 +138,7 @@ app.group(
     })
 );
 
+// Grouping APIs related to User
 app.group(
   'api/user',
   {},
@@ -126,10 +151,19 @@ app.group(
       const { personid, studentId, phone, major, gender, facebookurl, gradelevel } = request.body;
       return await insertinformation({ personid, studentId, phone, major, gender, facebookurl, gradelevel });
     })
+    .post('/afterlogin', async (request) => {
+      const { personid, name, cmuaccount, studentid, organization_name, accounttype } = request.body;
+      return await afterlogin({ personid, name, cmuaccount, studentid, organization_name, accounttype });
+    })
+    .post('/clickevaluation', async (request) => {
+      const { topic } = request.body;
+      return await clickevaluation({ topic });
+    })
+
 
 );
 
-
+// Grouping APIs related to Accesscode
 app.group(
   'api/accesscode',
   {},
@@ -152,6 +186,39 @@ app.group(
     })
 
 );
+
+app.group(
+  'api/appointment',
+  {},
+  (app) => app
+    .put('/listhistory', async (request) => {
+      const { studentid } = request.body;
+      return await listhistoryappointment({ studentid });
+    })
+    .delete('/cancel', async (request) => {
+      const { event_id } = request.body;
+      return await cancelappointmentroom1({ event_id });
+    })
+    .put('/getidcalendar', async (request) => {
+      const { start_datetime, end_datetime } = request.body;
+      return await getidcalendar1({ start_datetime, end_datetime });
+    })
+);
+
+app.group(
+  'api/appointment2',
+  {},
+  (app) => app
+    .delete('/cancel', async (request) => {
+      const { event_id } = request.body;
+      return await cancelappointmentroom2({ event_id });
+    })
+    .put('/getidcalendar', async (request) => {
+      const { start_datetime, end_datetime } = request.body;
+      return await getidcalendar2({ start_datetime, end_datetime });
+    })
+);
+
 
 
 

@@ -1,5 +1,34 @@
 import { pool } from '../lib/db';
 import moment from 'moment-timezone';
+import uniqueString from 'unique-string';
+
+export const afterlogin = async (request) => {
+    let client = await pool.connect();
+    try {
+        const personid = uniqueString()
+        const {  name, cmuaccount, studentid, organization_name, accounttype } = request;
+
+        if (!studentid && !personid && !name && !organization_name && !accounttype) {
+            return { message: "Please provide a valid cmuaccount" };
+        }
+
+        const text = 'INSERT INTO users(personid,firstname_lastname, cmuaccount, studentid, organization_name, accounttype) VALUES($1, $2, $3, $4, $5,$6) RETURNING *';
+        const values = [personid, name, cmuaccount, studentid, organization_name, accounttype];
+        const result = await client.query('SELECT studentid FROM users WHERE studentid = $1', [studentid]);
+
+        if (result.rowCount === 0) {
+             await client.query(text, values);
+        }
+
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw new Error('Failed to fetch data');
+    } finally {
+        if (client) {
+            client.release(); // ปลดปล่อยการเชื่อมต่อ
+        }
+    }
+};
 
 
 export const checkdata = async (request) => {
@@ -30,11 +59,11 @@ export const insertinformation = async (request) => {
     let client = await pool.connect();
     try {
         const role = "users";
-        const date =  moment().tz("Asia/Bangkok").format("YYYY-MM-DDTHH:mm:ssZ");
-        const { personid, studentId, phone, major, gender, facebookurl,  gradelevel  } = request;
+        const date = moment().tz("Asia/Bangkok").format("YYYY-MM-DDTHH:mm:ssZ");
+        const { personid, studentId, phone, major, gender, facebookurl, gradelevel } = request;
 
-        if (!studentId) {
-            return { message: "Please provide a valid cmuaccount" };
+        if (!studentId && !personid && !phone && !major && !gender && !facebookurl && !gradelevel) {
+            return { message: "Please provide a valid data" };
         }
 
 
