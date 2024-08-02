@@ -1,5 +1,6 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
+import * as Minio from 'minio'
 
 dotenv.config(); // โหลดตัวแปรสภาพแวดล้อมจากไฟล์ .env
 
@@ -13,6 +14,14 @@ export const pool = new Pool({
         rejectUnauthorized: false // Set to true in production if you have a certificate
       }
 });
+
+export const minioClient = new Minio.Client({
+  endPoint: 'localhost',
+  port: 9011,
+  useSSL: false,
+  accessKey: 'Entaneer_mind',
+  secretKey: 'ILoveYou300AndMind',
+})
 
 
 // export const pool = new Pool({

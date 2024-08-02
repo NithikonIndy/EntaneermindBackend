@@ -1,5 +1,6 @@
 import { Elysia, } from 'elysia';
 import { cors } from '@elysiajs/cors'
+import multer from 'multer';
 import {
   graphmentalhealthchecklist,
   graphappointmentforgradelevel,
@@ -50,11 +51,19 @@ import {
 
 import {
   cancelappointmentroom2,
-  getidcalendar2
+  getidcalendar2,
+  checkappointment2,
+  addtimeappointment2
 } from "./controller/appointment2"
+
+import {
+  addimg
+} from "./controller/article"
 
 const app = new Elysia();
 const port = 3001;
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 
 app.use(cors({
@@ -138,7 +147,21 @@ app.group(
       const { cmuaccount } = request.body;
       return await checkadmin({ cmuaccount });
     })
+    .put('/addimg', upload.single('file'), async (req, res) => {
+      try {
+        const file = req.file;
+        if (!file) {
+          return res.status(400).send('No file uploaded.');
+        }
+        // Your file processing logic here
+        res.status(200).send('File uploaded successfully');
+      } catch (err) {
+        console.error('Error uploading file:', err);
+        res.status(500).send('Failed to upload file');
+      }
+    })
 );
+
 
 // Grouping APIs related to User
 app.group(
@@ -210,8 +233,8 @@ app.group(
       return await checkappointment({ studentid });
     })
     .post('/addtimeappointment', async (request) => {
-      const { start_datetime, end_datetime, personid, topic  } = request.body;
-      return await addtimeappointment({ start_datetime, end_datetime, personid, topic  });
+      const { start_datetime, end_datetime, personid, topic } = request.body;
+      return await addtimeappointment({ start_datetime, end_datetime, personid, topic });
     })
 );
 
@@ -226,6 +249,14 @@ app.group(
     .put('/getidcalendar', async (request) => {
       const { start_datetime, end_datetime } = request.body;
       return await getidcalendar2({ start_datetime, end_datetime });
+    })
+    .put('/checkappointment', async (request) => {
+      const { studentid } = request.body;
+      return await checkappointment2({ studentid });
+    })
+    .post('/addtimeappointment', async (request) => {
+      const { start_datetime, end_datetime, personid, topic } = request.body;
+      return await addtimeappointment2({ start_datetime, end_datetime, personid, topic });
     })
 );
 
