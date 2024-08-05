@@ -42,3 +42,50 @@ export const addimg = async (request, response) => {
         });
     }
 };
+
+export const addarticle = async (request) => {
+    let client = await pool.connect();
+    try {
+        const { article, img_url } = request;
+        
+        if(article){
+            return { message: "Please provide a valid data" };
+        }
+
+        const text = `INSERT INTO article (text_content, image_url ) VALUES ($1, $2) RETURNING *`
+        const values =[article, img_url]
+
+        await client.query(text, values);
+
+
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw new Error('Failed to fetch data');
+    } finally {
+        if (client) {
+            client.release(); // ปลดปล่อยการเชื่อมต่อ
+        }
+    }
+};
+
+
+export const showarticle = async () => {
+    let client = await pool.connect();
+    try {
+        const text = `select * from article `;
+        const result = await client.query(text);
+        return result.rows;
+
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw new Error('Failed to fetch data');
+    } finally {
+        if (client) {
+            client.release(); // ปลดปล่อยการเชื่อมต่อ
+        }
+    }
+};
+
+
+
+
