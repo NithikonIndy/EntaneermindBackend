@@ -21,7 +21,8 @@ import {
 
 import {
   insertaddtodatabase,
-  checkadmin
+  checkadmin,
+  closetimeslot
 } from "./controller/admin"
 
 import {
@@ -146,6 +147,10 @@ app.group(
     .put('/checkadmin', async (request) => {
       const { cmuaccount } = request.body;
       return await checkadmin({ cmuaccount });
+    })
+    .post('/closetimeslot', async (request) => {
+      const { start_datetime,end_datetime ,personid} = request.body;
+      return await closetimeslot({ start_datetime,end_datetime ,personid });
     })
     .put('/addimg', upload.single('file'), async (req, res) => {
       try {

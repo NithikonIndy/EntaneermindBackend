@@ -1,7 +1,5 @@
 import { pool } from '../lib/db';
 
-
-
 export const insertaccesscode = async (request) => {
     let client = await pool.connect();
     try {

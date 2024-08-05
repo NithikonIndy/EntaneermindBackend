@@ -37,11 +37,10 @@ export const checkadmin = async (request) => {
             return { message: "Please provide a valid cmuaccount" };
         }
 
-       
-
         const text = 'SELECT * FROM admins WHERE cmuaccount = $1'
         const values = [cmuaccount];
-        return await client.query(text, values); 
+        const result = await client.query(text, values); 
+        return  result.rows;
 
     } catch (err) {
         console.error('Error executing query:', err);
@@ -49,6 +48,33 @@ export const checkadmin = async (request) => {
     } finally {
         if (client) {
             client.release(); // ปลดปล่อยการเชื่อมต่อ
+        }
+    }
+};
+
+export const closetimeslot = async (request) => {
+    let client = await pool.connect();
+    try {
+        const { start_datetime, end_datetime, personid } = request;
+
+        if (!start_datetime || !end_datetime || !personid) {
+            return { message: "Please provide valid start_datetime, end_datetime, and personid" };
+        }
+
+        const event_id = uniqueString();
+        const room = "conseling_room1";
+
+        const text = 'INSERT INTO admin_conseling_room1 (event_id, start_datetime, end_datetime, room, personid) VALUES($1, $2, $3, $4, $5) RETURNING *';
+        const values = [event_id, start_datetime, end_datetime, room, personid];
+        const result = await client.query(text, values);
+        return result.rows[0]; 
+
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw new Error('Failed to insert data');
+    } finally {
+        if (client) {
+            client.release(); // Release the connection
         }
     }
 };
