@@ -32,7 +32,7 @@ export const getinformationusers = async () => {
   
       const text = `
       select u.personid ,u.firstname_lastname , u.studentid ,u.phone , u.major  , u.gender , ucr.topic , u.facebookurl 
-       ,ir.details_consultation ,ir.mental_health_checklist ,ucr.start_datetime, ucr.end_datetime ,ucr.room 
+       ,ir.details_consultation ,ir.mental_health_checklist ,ucr.start_datetime, ucr.end_datetime ,ucr.room ,ucr.event_id
        from users u join user_conseling_room1 ucr on u.personid = ucr.personid join informationusers_room1 ir on ucr.event_id = ir.event_id
        WHERE DATE(ucr.start_datetime) = $1 ORDER BY ucr.start_datetime;
    `;

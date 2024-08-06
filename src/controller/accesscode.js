@@ -73,8 +73,33 @@ export const deleteautoaccesscode = async () => {
     let client = await pool.connect();
     try {
 
-        const text = `DELETE FROM accesscode WHERE expire_datetime < NOW() - INTERVAL '50 minute';`;
+        const text = `DELETE FROM accesscode WHERE expire_datetime < NOW() - INTERVAL '3600 minute';`;
         await client.query(text); // Using parameterized query for security
+
+    } catch (error) {
+        console.error('Error executing query:', error);
+        return { error: 'Failed to fetch data' };
+    } finally {
+        if (client) {
+            client.release(); // Ensure the connection is released
+        }
+    }
+};
+
+export const findpersonid = async (request) => {
+    let client = await pool.connect();
+    try {
+
+        const { personId } = request;
+
+        if (!personId) {
+            return { message: "Please provide a date" };
+        }
+
+        const text = `SELECT u.personid FROM users u WHERE u.personid = $1`;
+        const values = [personId]; // Parameterized query values
+        const result = await client.query(text, values); 
+        return result.rows
 
     } catch (error) {
         console.error('Error executing query:', error);
