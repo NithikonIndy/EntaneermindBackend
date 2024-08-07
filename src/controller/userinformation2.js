@@ -1,6 +1,6 @@
 import { pool } from '../lib/db';
 
-export const getinformationusers = async () => {
+export const getinformationusers2 = async () => {
     let client = await pool.connect();
     try {
       const text = `select u.personid ,u.firstname_lastname , u.studentid ,u.phone , u.major  , u.gender , 
@@ -21,7 +21,7 @@ export const getinformationusers = async () => {
     }
   };
 
-  export const listinformation = async (request) => {
+  export const listinformation2 = async (request) => {
     let client = await pool.connect();
     try {
       const { date } = request;
@@ -51,7 +51,7 @@ export const getinformationusers = async () => {
     }
   };
 
-  export const listinformationdetail = async (request) => {
+  export const listinformationdetail2 = async (request) => {
     let client = await pool.connect();
     try {
       const { studentid } = request;
@@ -80,7 +80,7 @@ export const getinformationusers = async () => {
     }
   };
 
-  export const detailinformation = async (request) => {
+  export const detailinformation2 = async (request) => {
     let client = await pool.connect();
     try {
       const { id } = request;
@@ -109,7 +109,7 @@ export const getinformationusers = async () => {
     }
   };
 
-  export const updateinformation = async (request) => {
+  export const updateinformation2 = async (request) => {
     let client = await pool.connect();
     try {
       const { details_consultation, mental_health_checklist, mental_risk_level ,id} = request;

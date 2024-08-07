@@ -78,3 +78,30 @@ export const closetimeslot = async (request) => {
         }
     }
 };
+
+export const closetimeslot2 = async (request) => {
+    let client = await pool.connect();
+    try {
+        const { start_datetime, end_datetime, personid } = request;
+
+        if (!start_datetime || !end_datetime || !personid) {
+            return { message: "Please provide valid start_datetime, end_datetime, and personid" };
+        }
+
+        const event_id = uniqueString();
+        const room = "conseling_room2";
+
+        const text = 'INSERT INTO admin_conseling_room2 (event_id, start_datetime, end_datetime, room, personid) VALUES($1, $2, $3, $4, $5) RETURNING *';
+        const values = [event_id, start_datetime, end_datetime, room, personid];
+        const result = await client.query(text, values);
+        return result.rows[0]; 
+
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw new Error('Failed to insert data');
+    } finally {
+        if (client) {
+            client.release(); // Release the connection
+        }
+    }
+};

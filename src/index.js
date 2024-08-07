@@ -20,9 +20,18 @@ import {
   from "./controller/userinformation"
 
 import {
+  getinformationusers2,
+  listinformation2,
+  listinformationdetail2,
+  detailinformation2,
+  updateinformation2
+} from "./controller/userinformation2"
+
+import {
   insertaddtodatabase,
   checkadmin,
-  closetimeslot
+  closetimeslot,
+  closetimeslot2
 } from "./controller/admin"
 
 import {
@@ -134,6 +143,32 @@ app.group(
     })
 );
 
+app.group(
+  'api/infor2',
+  {},
+  (app) => app
+    .get('/getinformationusers', async () => {
+      return await getinformationusers2();
+    })
+    .post('/list', async (request) => {
+      const { date } = request.body;
+      return await listinformation2({ date });
+    })
+    .post('/listdetail', async (request) => {
+      const { studentid } = request.body;
+      return await listinformationdetail2({ studentid });
+    })
+    .post('/detailinfor/:id', async (request) => {
+      const { id } = request.params;
+      return await detailinformation2({ id });
+    })
+    .put('/editinfor/:id', async (request) => {
+      const { details_consultation, mental_health_checklist, mental_risk_level } = request.body;
+      const { id } = request.params;
+      return await updateinformation2({ details_consultation, mental_health_checklist, mental_risk_level, id });
+    })
+);
+
 
 // Grouping APIs related to information
 app.group(
@@ -151,6 +186,10 @@ app.group(
     .post('/closetimeslot', async (request) => {
       const { start_datetime,end_datetime ,personid} = request.body;
       return await closetimeslot({ start_datetime,end_datetime ,personid });
+    })
+    .post('/closetimeslot2', async (request) => {
+      const { start_datetime,end_datetime ,personid} = request.body;
+      return await closetimeslot2({ start_datetime,end_datetime ,personid });
     })
     .put('/addimg', upload.single('file'), async (req, res) => {
       try {
