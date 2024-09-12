@@ -1,5 +1,7 @@
 import { Elysia, } from 'elysia';
 import { cors } from '@elysiajs/cors'
+import formidable from 'formidable';
+import fs from 'fs';
 import multer from 'multer';
 import {
   graphmentalhealthchecklist,
@@ -66,6 +68,8 @@ import {
   addtimeappointment2
 } from "./controller/appointment2"
 
+import { login, redirect, calendars, logout, getbasicInfo } from "./controller/google"
+
 import {
   addimg
 } from "./controller/article"
@@ -73,7 +77,7 @@ import {
 const app = new Elysia();
 const port = 3001;
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 
 app.use(cors({
@@ -180,31 +184,45 @@ app.group(
       return await insertaddtodatabase({ name, cmuaccount, studentid, organization_name, accounttype });
     })
     .put('/checkadmin', async (request) => {
-      const { cmuaccount } = request.body;
-      return await checkadmin({ cmuaccount });
+      const { cmuAccount } = request.body;
+      return await checkadmin({ cmuAccount });
     })
     .post('/closetimeslot', async (request) => {
-      const { start_datetime,end_datetime ,personid} = request.body;
-      return await closetimeslot({ start_datetime,end_datetime ,personid });
+      const { start_datetime, end_datetime, personid } = request.body;
+      return await closetimeslot({ start_datetime, end_datetime, personid });
     })
     .post('/closetimeslot2', async (request) => {
-      const { start_datetime,end_datetime ,personid} = request.body;
-      return await closetimeslot2({ start_datetime,end_datetime ,personid });
+      const { start_datetime, end_datetime, personid } = request.body;
+      return await closetimeslot2({ start_datetime, end_datetime, personid });
     })
-    .put('/addimg', upload.single('file'), async (req, res) => {
+    //, upload.single('image')
+    .post('/addimg', async (req, res) => {
+
       try {
         const file = req.file;
+
+        // เพิ่ม log เพื่อตรวจสอบว่าข้อมูลไฟล์ถูกดึงมาได้หรือไม่
+        console.log("Uploaded file1:", file);
+
         if (!file) {
-          return res.status(400).send('No file uploaded.');
+          res.status(400).send('No file uploaded.');
+          return;
         }
-        // Your file processing logic here
-        res.status(200).send('File uploaded successfully');
+
+        const filename = file.originalname;
+        const buffer = file.buffer;
+        const mimetype = file.mimetype;
+
+        // อัปโหลดไฟล์ไปยัง MinIO
+        const result = await addimg(filename, buffer, mimetype);
+        res.send(result);
       } catch (err) {
         console.error('Error uploading file:', err);
         res.status(500).send('Failed to upload file');
       }
     })
 );
+
 
 
 // Grouping APIs related to User
@@ -303,6 +321,76 @@ app.group(
       return await addtimeappointment2({ start_datetime, end_datetime, personid, topic });
     })
 );
+
+
+
+app.group(
+  '/api/google',
+  {},
+  (app) => app
+    .get('/login', async ({ request, response }) => {
+      const result = await login(request, response);
+      if (result) {
+        return result.redirectUrl;
+      } else {
+        return result; // Return error message if any
+      }
+    })
+    .post('/redirect', async (request) => {
+      const { code } = request.body;
+      return await redirect({ code });
+    })
+    .get('/calendars', async ({ request, response }) => {
+      return await calendars()
+    })
+    .get('/logout', async ({ request, response }) => {
+      return await logout();
+    })
+    .get('/getinfo', async ({ request, response }) => {
+      return await getbasicInfo();
+    })
+    
+
+);
+
+
+
+
+app.post('/addimg', async (req, res) => {
+  if (req.method === 'POST' && req.headers['content-type']?.startsWith('multipart/form-data')) {
+    const form = new formidable.IncomingForm();
+    form.uploadDir = './uploads'; // ปรับตาม path ที่คุณต้องการ
+    form.keepExtensions = true;
+
+    form.parse(req, async (err, fields, files) => {
+      if (err) {
+        res.status(500).send('Error parsing form data');
+        return;
+      }
+
+      try {
+        const file = files.image[0]; // ดึงไฟล์จาก req.files
+        if (!file) {
+          res.status(400).send('No file uploaded.');
+          return;
+        }
+
+        const filename = file.originalFilename;
+        const buffer = fs.readFileSync(file.filepath);
+        const mimetype = file.mimetype;
+
+        const result = await addimg(filename, buffer, mimetype);
+        res.send(result);
+      } catch (err) {
+        console.error('Error uploading file:', err);
+        res.status(500).send('Failed to upload file');
+      }
+    });
+  } else {
+    res.status(400).send('Invalid request');
+  }
+});
+
 
 
 

@@ -7,10 +7,13 @@
   },
   "dependencies": {
     "@elysiajs/cors": "^1.1.0",
+    "busboy": "^1.6.0",
     "cookies-next": "^4.2.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "elysia": "latest",
+    "formidable": "^3.5.1",
+    "googleapis": "^144.0.0",
     "jsonwebtoken": "^9.0.2",
     "minio": "^8.0.1",
     "moment": "^2.30.1",

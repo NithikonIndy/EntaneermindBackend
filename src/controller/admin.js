@@ -31,14 +31,14 @@ export const insertaddtodatabase = async (request) => {
 export const checkadmin = async (request) => {
     let client = await pool.connect();
     try {
-        const { cmuaccount } = request;
-
-        if ( !cmuaccount ) {
+        const { cmuAccount } = request;
+      
+        if ( !cmuAccount ) {
             return { message: "Please provide a valid cmuaccount" };
         }
 
         const text = 'SELECT * FROM admins WHERE cmuaccount = $1'
-        const values = [cmuaccount];
+        const values = [cmuAccount];
         const result = await client.query(text, values); 
         return  result.rows;
 
