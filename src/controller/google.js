@@ -35,32 +35,25 @@ export const login = async (req, res) => {
     }
 };
 
-export const redirect = async ({ code }, response) => {
-    try {
+export const redirect = async ( req, res ) => {
+    
+    try {        
+        const code = req
         const { tokens } = await oauth2Client.getToken(code);
-        const { access_token, refresh_token, scope, token_type, expiry_date } = tokens;
+    
+        oauth2Client.setCredentials(tokens);
+        const userInfo = await oauth2.userinfo.get();
 
-        // Set cookies
-        response.cookie('access_token', access_token, {
-            domain: 'localhost',
-            httpOnly: true
-        });
-        response.cookie('refresh_token', refresh_token, {
-            domain: 'localhost',
-            httpOnly: true
-        });
-
-        return response.json({ message: 'Successfully logged in' });
+       return {  info: userInfo.data}; // ส่ง data กลับ
+       
     } catch (error) {
-        return response.json({ error: 'Error during authentication' });
+        return res.json({ error: 'Error during authentication' });
     }
 };
 export const getbasicInfo = async () => {
     try {
-        const accessToken = getCookie('accessToken');
-        const refreshToken = getCookie('refreshToken');
-
-        console.log("my accessToken",accessToken);
+      
+       
 
 
         if (!accessToken) {

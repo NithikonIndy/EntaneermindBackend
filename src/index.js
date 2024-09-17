@@ -1,6 +1,7 @@
 import { Elysia, } from 'elysia';
 import { cors } from '@elysiajs/cors'
 import formidable from 'formidable';
+import { cookie } from '@elysiajs/cookie'
 import fs from 'fs';
 import multer from 'multer';
 import {
@@ -68,13 +69,15 @@ import {
   addtimeappointment2
 } from "./controller/appointment2"
 
-import { login, redirect, calendars, logout, getbasicInfo } from "./controller/google"
+import { login, redirect, calendars, logout, getbasicInfo,oauth2Client } from "./controller/google"
 
 import {
   addimg
 } from "./controller/article"
 
-const app = new Elysia();
+const app = new Elysia()
+
+
 const port = 3001;
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -85,6 +88,7 @@ app.use(cors({
   methods: 'GET, POST, PUT, DELETE, PATCH',
   credentials: true,
 }));
+
 
 
 
@@ -336,10 +340,12 @@ app.group(
         return result; // Return error message if any
       }
     })
-    .post('/redirect', async (request) => {
-      const { code } = request.body;
-      return await redirect({ code });
+    .post('/redirect', async (req) => {
+      const {code} = await req.body;
+      
+      return await redirect(code);
     })
+
     .get('/calendars', async ({ request, response }) => {
       return await calendars()
     })
@@ -352,6 +358,15 @@ app.group(
     
 
 );
+
+
+
+
+
+
+
+
+
 
 
 

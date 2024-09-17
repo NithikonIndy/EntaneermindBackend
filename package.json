@@ -6,6 +6,7 @@
     "dev": "bun run --watch src/index.js"
   },
   "dependencies": {
+    "@elysiajs/cookie": "^0.8.0",
     "@elysiajs/cors": "^1.1.0",
     "busboy": "^1.6.0",
     "cookies-next": "^4.2.1",
