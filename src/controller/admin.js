@@ -105,3 +105,64 @@ export const closetimeslot2 = async (request) => {
         }
     }
 };
+
+export const gettimeroom = async () => {
+    let client = await pool.connect();
+    try {
+        const result = await client.query('SELECT * FROM admin_conseling_room1')
+        return result.rows
+
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw new Error('Failed to insert data');
+    } finally {
+        if (client) {
+            client.release(); // Release the connection
+        }
+    }
+};
+
+export const deltimeroom = async (request) => {
+    let client = await pool.connect();
+    try {
+        await client.query(`DELETE FROM admin_conseling_room1 WHERE CAST(end_datetime AS TIMESTAMP) < NOW()`);
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw new Error('Failed to insert data');
+    } finally {
+        if (client) {
+            client.release(); // Release the connection
+        }
+    }
+};
+
+export const gettimeroom2 = async () => {
+    let client = await pool.connect();
+    try {
+        const result = await client.query('SELECT * FROM admin_conseling_room2')
+        return result.rows
+
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw new Error('Failed to insert data');
+    } finally {
+        if (client) {
+            client.release(); // Release the connection
+        }
+    }
+};
+
+export const deltimeroom2 = async (request) => {
+    let client = await pool.connect();
+    try {
+        await client.query(`DELETE FROM admin_conseling_room2 WHERE CAST(end_datetime AS TIMESTAMP) < NOW()`);
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw new Error('Failed to insert data');
+    } finally {
+        if (client) {
+            client.release(); // Release the connection
+        }
+    }
+};
+

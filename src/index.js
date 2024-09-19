@@ -34,7 +34,11 @@ import {
   insertaddtodatabase,
   checkadmin,
   closetimeslot,
-  closetimeslot2
+  closetimeslot2,
+  gettimeroom,
+  deltimeroom,
+  gettimeroom2,
+  deltimeroom2,
 } from "./controller/admin"
 
 import {
@@ -69,7 +73,19 @@ import {
   addtimeappointment2
 } from "./controller/appointment2"
 
-import { login, redirect, calendars, logout, getbasicInfo,oauth2Client } from "./controller/google"
+import {
+  login,
+  redirect,
+  calendars,
+  getbasicInfo,
+  oauth2Client,
+  events,
+  events2,
+  createevent,
+  deleteevent,
+  createevent2,
+  deleteevent2,
+} from "./controller/google"
 
 import {
   addimg
@@ -199,32 +215,19 @@ app.group(
       const { start_datetime, end_datetime, personid } = request.body;
       return await closetimeslot2({ start_datetime, end_datetime, personid });
     })
-    //, upload.single('image')
-    .post('/addimg', async (req, res) => {
-
-      try {
-        const file = req.file;
-
-        // เพิ่ม log เพื่อตรวจสอบว่าข้อมูลไฟล์ถูกดึงมาได้หรือไม่
-        console.log("Uploaded file1:", file);
-
-        if (!file) {
-          res.status(400).send('No file uploaded.');
-          return;
-        }
-
-        const filename = file.originalname;
-        const buffer = file.buffer;
-        const mimetype = file.mimetype;
-
-        // อัปโหลดไฟล์ไปยัง MinIO
-        const result = await addimg(filename, buffer, mimetype);
-        res.send(result);
-      } catch (err) {
-        console.error('Error uploading file:', err);
-        res.status(500).send('Failed to upload file');
-      }
+    .get('/gettimeroom', async () => {
+      return await gettimeroom();
     })
+    .delete('/deltimeroom', async () => {
+      return await deltimeroom();
+    })
+    .get('/gettimeroom2', async () => {
+      return await gettimeroom2();
+    })
+    .delete('/deltimeroom2', async () => {
+      return await deltimeroom2();
+    })
+   
 );
 
 
@@ -341,21 +344,40 @@ app.group(
       }
     })
     .post('/redirect', async (req) => {
-      const {code} = await req.body;
-      
+      const { code } = await req.body;
       return await redirect(code);
     })
+    .get('/events', async () => {
+      return await events(); 
+    })
+    .get('/events2', async () => {
+      return await events2(); 
+    })
+    .post('/createevent', async (req) => {
+      const { description, startDateTime, endDateTime } = await req.body;
+      return await createevent({ description, startDateTime, endDateTime });
+    })
+    .post('/createevent2', async (req) => {
+      const { description, startDateTime, endDateTime } = await req.body;
+      return await createevent2({ description, startDateTime, endDateTime });
+    })
+    .put('/deleteevent', async (req) => {
+      const { event_id } = await req.body;
+      return await deleteevent({ event_id });
+    })
+    .put('/deleteevent2', async (req) => {
+      const { event_id } = await req.body;
+      return await deleteevent2({ event_id });
+    })
 
-    .get('/calendars', async ({ request, response }) => {
-      return await calendars()
-    })
-    .get('/logout', async ({ request, response }) => {
-      return await logout();
-    })
-    .get('/getinfo', async ({ request, response }) => {
-      return await getbasicInfo();
-    })
-    
+
+    // .get('/getinfo', async ({ request, response }) => {
+    //   return await getbasicInfo();
+    // })
+    // .get('/calendars', async ({ request, response }) => {
+    //   return await calendars()
+    // })
+
 
 );
 
