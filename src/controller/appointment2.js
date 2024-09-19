@@ -13,10 +13,10 @@ export const cancelappointmentroom2 = async (request) => {
             return { message: "Please provide a valid cmuaccount" };
         }
 
-        const text = 'DELETE FROM user_conseling_room2 WHERE event_id = $1';
+        const text = 'DELETE FROM user_conseling_room1 WHERE event_id = $1';
         const values = [event_id];
 
-        const text_infor = 'DELETE FROM informationusers_room2 WHERE event_id = $1';
+        const text_infor = 'DELETE FROM informationusers_room1 WHERE event_id = $1';
         const values_infor = [event_id];
 
         await client.query(text, values);
@@ -75,7 +75,7 @@ export const checkappointment2 = async (request) => {
         const query = `
 SELECT u.firstname_lastname, u.studentid, ucr2.start_datetime, ucr2.end_datetime, ucr2.room, ucr2.event_id
 FROM users u
-INNER JOIN user_conseling_room2 ucr2 ON u.personid = ucr2.personid
+INNER JOIN user_conseling_room1 ucr2 ON u.personid = ucr2.personid
 WHERE u.studentid = $1
 limit 1 ;
         `;
@@ -103,10 +103,10 @@ export const addtimeappointment2 = async (request) => {
         const room = 'conseling_room2'
         const event_id = uniqueString()
 
-        const text = 'INSERT INTO user_conseling_room2 (start_datetime, end_datetime, room, personid, topic,event_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
+        const text = 'INSERT INTO user_conseling_room1 (start_datetime, end_datetime, room, personid, topic,event_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
         const values = [start_datetime, end_datetime, room, personid, topic, event_id];
 
-        const text_infor = 'INSERT INTO informationusers_room2 (personid,event_id) VALUES($1, $2) RETURNING *';
+        const text_infor = 'INSERT INTO informationusers_room1 (personid,event_id) VALUES($1, $2) RETURNING *';
         const values_infor = [personid, event_id]
 
         if (!start_datetime && end_datetime && !personid && !topic) {

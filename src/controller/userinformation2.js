@@ -5,8 +5,8 @@ export const getinformationusers2 = async () => {
     try {
       const text = `select u.personid ,u.firstname_lastname , u.studentid ,u.phone , u.major  , u.gender , 
             ucr.topic , u.facebookurl ,ir.details_consultation ,ir.mental_health_checklist ,ucr.start_datetime, 
-            ucr.end_datetime ,ucr.room ,ucr.event_id from users u join user_conseling_room2 ucr on u.personid = ucr.personid 
-            join informationusers_room2 ir on ucr.event_id = ir.event_id ORDER BY ucr.start_datetime DESC;`;
+            ucr.end_datetime ,ucr.room ,ucr.event_id from users u join user_conseling_room1 ucr on u.personid = ucr.personid 
+            join informationusers_room1 ir on ucr.event_id = ir.event_id ORDER BY ucr.start_datetime DESC;`;
   
       const result = await client.query(text); // Using parameterized query for security
   
@@ -33,7 +33,7 @@ export const getinformationusers2 = async () => {
       const text = `
       select u.personid ,u.firstname_lastname , u.studentid ,u.phone , u.major  , u.gender , ucr.topic , u.facebookurl 
        ,ir.details_consultation ,ir.mental_health_checklist ,ucr.start_datetime, ucr.end_datetime ,ucr.room ,ucr.event_id
-       from users u join user_conseling_room2 ucr on u.personid = ucr.personid join informationusers_room2 ir on ucr.event_id = ir.event_id
+       from users u join user_conseling_room1 ucr on u.personid = ucr.personid join informationusers_room1 ir on ucr.event_id = ir.event_id
        WHERE DATE(ucr.start_datetime) = $1 ORDER BY ucr.start_datetime;
    `;
   
@@ -62,7 +62,7 @@ export const getinformationusers2 = async () => {
   
       const text = `
           select ir.details_consultation ,ucr.start_datetime
-        from users u join user_conseling_room2 ucr on u.personid = ucr.personid join informationusers_room2 ir on ucr.event_id = ir.event_id
+        from users u join user_conseling_room1 ucr on u.personid = ucr.personid join informationusers_room1 ir on ucr.event_id = ir.event_id
         WHERE u.studentid = $1 ORDER BY ucr.start_datetime desc LIMIT 1 OFFSET 1 ;
         `;
   
@@ -91,8 +91,8 @@ export const getinformationusers2 = async () => {
         ucr.topic, u.facebookurl, ir.details_consultation, ir.mental_health_checklist, ir.mental_risk_level, 
         ucr.start_datetime, ucr.end_datetime, ucr.room 
         FROM users u 
-        JOIN user_conseling_room2 ucr ON u.personid = ucr.personid 
-        JOIN informationusers_room2 ir ON ucr.event_id = ir.event_id 
+        JOIN user_conseling_room1 ucr ON u.personid = ucr.personid 
+        JOIN informationusers_room1 ir ON ucr.event_id = ir.event_id 
         WHERE ucr.event_id = $1`;
       
       const values = [id];
@@ -119,7 +119,7 @@ export const getinformationusers2 = async () => {
         return { message: "Please provide a valid ID" };
       }
       
-      const text = `UPDATE informationusers_room2 
+      const text = `UPDATE informationusers_room1 
                      SET details_consultation = $1, 
                          mental_health_checklist = $2, 
                          mental_risk_level = $3 

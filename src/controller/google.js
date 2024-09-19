@@ -188,13 +188,13 @@ export const events = async () => {
             for (const eventId of checkCalendar) {
                 if (!events.some(event => event.id === eventId)) {
                     // EventId exists in the database but not in the current events from Google Calendar
-                    console.log("this is eventId", eventId);
+                    // console.log("this is eventId", eventId);
 
-                    try {
-                        await client.query('DELETE FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
-                    } catch (deleteError) {
-                        console.error("Error deleting event from the database:", deleteError);
-                    }
+                    // try {
+                    //     await client.query('DELETE FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
+                    // } catch (deleteError) {
+                    //     console.error("Error deleting event from the database:", deleteError);
+                    // }
                 }
             }
 
@@ -262,11 +262,11 @@ export const events2 = async () => {
 
             if (startDateTime && endDateTime && eventId) {
                 // Check if the event already exists in the database
-                const checkExisting = await client.query('SELECT event_id FROM admin_conseling_room2 WHERE event_id = $1', [eventId]);
+                const checkExisting = await client.query('SELECT event_id FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
 
                 if (checkExisting.rowCount === 0) {
                     // Insert the event if it does not exist
-                    const text = 'INSERT INTO admin_conseling_room2(event_id, start_datetime, end_datetime, room, personid) VALUES($1, $2, $3, $4, $5) RETURNING *';
+                    const text = 'INSERT INTO admin_conseling_room1(event_id, start_datetime, end_datetime, room, personid) VALUES($1, $2, $3, $4, $5) RETURNING *';
                     const values = [eventId, startDateTime, endDateTime, room, personIdAdmin];
 
                     await client.query(text, values);
@@ -274,19 +274,19 @@ export const events2 = async () => {
             }
 
 
-            const queryCalendar = await client.query('SELECT event_id FROM admin_conseling_room2');
+            const queryCalendar = await client.query('SELECT event_id FROM admin_conseling_room1');
             const checkCalendar = queryCalendar.rows.map(row => row.event_id);
 
             for (const eventId of checkCalendar) {
                 if (!events.some(event => event.id === eventId)) {
                     // EventId exists in the database but not in the current events from Google Calendar
-                    console.log("this is eventId", eventId);
+                    // console.log("this is eventId", eventId);
 
-                    try {
-                        await client.query('DELETE FROM admin_conseling_room2 WHERE event_id = $1', [eventId]);
-                    } catch (deleteError) {
-                        console.error("Error deleting event from the database:", deleteError);
-                    }
+                    // try {
+                    //     await client.query('DELETE FROM admin_conseling_room2 WHERE event_id = $1', [eventId]);
+                    // } catch (deleteError) {
+                    //     console.error("Error deleting event from the database:", deleteError);
+                    // }
                 }
             }
 
@@ -354,7 +354,7 @@ export const createevent = async (request) => {
                 requestBody: event,
             }).then((response) => {
                 console.log('Event created: %s', response.data);
-                return new NextResponse(JSON.stringify({ message: "Event successfully created!" }), { status: 200 });
+                // return new NextResponse(JSON.stringify({ message: "Event successfully created!" }), { status: 200 });
             }).catch((err) => {
                 console.error('There was an error contacting the Calendar service:', err);
                 return new NextResponse('Error creating event', { status: 500 });

@@ -208,8 +208,8 @@ app.group(
       return await checkadmin({ cmuAccount });
     })
     .post('/closetimeslot', async (request) => {
-      const { start_datetime, end_datetime, personid } = request.body;
-      return await closetimeslot({ start_datetime, end_datetime, personid });
+      const { start_datetime, end_datetime, personid ,room} = request.body;
+      return await closetimeslot({ start_datetime, end_datetime, personid ,room});
     })
     .post('/closetimeslot2', async (request) => {
       const { start_datetime, end_datetime, personid } = request.body;

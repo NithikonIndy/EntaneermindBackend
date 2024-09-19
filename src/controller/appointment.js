@@ -12,13 +12,14 @@ export const listhistoryappointment = async (request) => {
 FROM users u
 INNER JOIN user_conseling_room1 ucr ON u.personid = ucr.personid
 WHERE u.studentid = $1
-UNION ALL
-SELECT u.firstname_lastname, u.studentid, ucr2.start_datetime, ucr2.end_datetime, ucr2.room, ucr2.event_id
-FROM users u
-INNER JOIN user_conseling_room2 ucr2 ON u.personid = ucr2.personid
-WHERE u.studentid = $1
 ORDER BY start_datetime DESC;
         `;
+
+//         UNION ALL
+// SELECT u.firstname_lastname, u.studentid, ucr2.start_datetime, ucr2.end_datetime, ucr2.room, ucr2.event_id
+// FROM users u
+// INNER JOIN user_conseling_room1 ucr2 ON u.personid = ucr2.personid
+// WHERE u.studentid = $1
 
         const result = await client.query(query, [studentid]);
 

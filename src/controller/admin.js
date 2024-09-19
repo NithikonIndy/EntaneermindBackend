@@ -55,14 +55,16 @@ export const checkadmin = async (request) => {
 export const closetimeslot = async (request) => {
     let client = await pool.connect();
     try {
-        const { start_datetime, end_datetime, personid } = request;
+        const { start_datetime, end_datetime, personid,room } = request;
+        console.log(start_datetime, end_datetime, personid,room );
+        
 
-        if (!start_datetime || !end_datetime || !personid) {
+        if (!start_datetime || !end_datetime || !personid || !room) {
             return { message: "Please provide valid start_datetime, end_datetime, and personid" };
         }
 
         const event_id = uniqueString();
-        const room = "conseling_room1";
+        // const room = "conseling_room1";
 
         const text = 'INSERT INTO admin_conseling_room1 (event_id, start_datetime, end_datetime, room, personid) VALUES($1, $2, $3, $4, $5) RETURNING *';
         const values = [event_id, start_datetime, end_datetime, room, personid];
@@ -91,7 +93,7 @@ export const closetimeslot2 = async (request) => {
         const event_id = uniqueString();
         const room = "conseling_room2";
 
-        const text = 'INSERT INTO admin_conseling_room2 (event_id, start_datetime, end_datetime, room, personid) VALUES($1, $2, $3, $4, $5) RETURNING *';
+        const text = 'INSERT INTO admin_conseling_room1 (event_id, start_datetime, end_datetime, room, personid) VALUES($1, $2, $3, $4, $5) RETURNING *';
         const values = [event_id, start_datetime, end_datetime, room, personid];
         const result = await client.query(text, values);
         return result.rows[0]; 
@@ -109,7 +111,7 @@ export const closetimeslot2 = async (request) => {
 export const gettimeroom = async () => {
     let client = await pool.connect();
     try {
-        const result = await client.query('SELECT * FROM admin_conseling_room1')
+        const result = await client.query(`SELECT * FROM admin_conseling_room1 acr WHERE acr.room = 'conseling_room1'`)
         return result.rows
 
     } catch (err) {
@@ -139,7 +141,7 @@ export const deltimeroom = async (request) => {
 export const gettimeroom2 = async () => {
     let client = await pool.connect();
     try {
-        const result = await client.query('SELECT * FROM admin_conseling_room2')
+        const result = await client.query(`SELECT * FROM admin_conseling_room1 acr WHERE acr.room = 'conseling_room2'`)
         return result.rows
 
     } catch (err) {
@@ -155,7 +157,7 @@ export const gettimeroom2 = async () => {
 export const deltimeroom2 = async (request) => {
     let client = await pool.connect();
     try {
-        await client.query(`DELETE FROM admin_conseling_room2 WHERE CAST(end_datetime AS TIMESTAMP) < NOW()`);
+        await client.query(`DELETE FROM admin_conseling_room1 WHERE CAST(end_datetime AS TIMESTAMP) < NOW()`);
     } catch (err) {
         console.error('Error executing query:', err);
         throw new Error('Failed to insert data');
