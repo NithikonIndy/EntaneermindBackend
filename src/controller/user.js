@@ -82,3 +82,22 @@ export const insertinformation = async (request) => {
         }
     }
 };
+
+export const getmailandtime = async (request) => {
+    let client = await pool.connect();
+    try {
+        const result = await client.query(`SELECT *
+FROM user_conseling_room1 ucr
+JOIN users u ON u.personid = ucr.personid
+WHERE (ucr.start_datetime::timestamptz) 
+      BETWEEN NOW() AND (NOW() + INTERVAL '1440 minute')`)
+        return result.rows
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw new Error('Failed to fetch data');
+    } finally {
+        if (client) {
+            client.release(); // ปลดปล่อยการเชื่อมต่อ
+        }
+    }
+};

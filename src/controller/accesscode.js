@@ -73,7 +73,7 @@ export const deleteautoaccesscode = async () => {
     let client = await pool.connect();
     try {
 
-        const text = `DELETE FROM accesscode WHERE expire_datetime < NOW() - INTERVAL '3600 minute';`;
+        const text = `DELETE FROM accesscode WHERE expire_datetime < NOW() - INTERVAL '1440 minute';`;
         await client.query(text); // Using parameterized query for security
 
     } catch (error) {

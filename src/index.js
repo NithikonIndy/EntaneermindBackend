@@ -1,9 +1,10 @@
-import { Elysia, } from 'elysia';
+import { Elysia,t } from 'elysia';
 import { cors } from '@elysiajs/cors'
 import formidable from 'formidable';
 import { cookie } from '@elysiajs/cookie'
 import fs from 'fs';
 import multer from 'multer';
+import { nanoid } from 'nanoid';
 import {
   graphmentalhealthchecklist,
   graphappointmentforgradelevel,
@@ -44,7 +45,8 @@ import {
 import {
   checkdata,
   insertinformation,
-  afterlogin
+  afterlogin,
+  getmailandtime,
 } from "./controller/user"
 
 import {
@@ -91,12 +93,16 @@ import {
   addimg
 } from "./controller/article"
 
+import {
+  RegisteredVillageController
+} from "./controller/image"
+
+
+
 const app = new Elysia()
 
 
 const port = 3001;
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
 
 
 app.use(cors({
@@ -208,8 +214,8 @@ app.group(
       return await checkadmin({ cmuAccount });
     })
     .post('/closetimeslot', async (request) => {
-      const { start_datetime, end_datetime, personid ,room} = request.body;
-      return await closetimeslot({ start_datetime, end_datetime, personid ,room});
+      const { start_datetime, end_datetime, personid, room } = request.body;
+      return await closetimeslot({ start_datetime, end_datetime, personid, room });
     })
     .post('/closetimeslot2', async (request) => {
       const { start_datetime, end_datetime, personid } = request.body;
@@ -227,7 +233,7 @@ app.group(
     .delete('/deltimeroom2', async () => {
       return await deltimeroom2();
     })
-   
+
 );
 
 
@@ -252,6 +258,9 @@ app.group(
     .post('/clickevaluation', async (request) => {
       const { topic } = request.body;
       return await clickevaluation({ topic });
+    })
+    .get('/getmailandtime', async () => {
+      return await getmailandtime();
     })
 
 
@@ -348,10 +357,10 @@ app.group(
       return await redirect(code);
     })
     .get('/events', async () => {
-      return await events(); 
+      return await events();
     })
     .get('/events2', async () => {
-      return await events2(); 
+      return await events2();
     })
     .post('/createevent', async (req) => {
       const { description, startDateTime, endDateTime } = await req.body;
@@ -371,65 +380,30 @@ app.group(
     })
 
 
-    // .get('/getinfo', async ({ request, response }) => {
-    //   return await getbasicInfo();
-    // })
-    // .get('/calendars', async ({ request, response }) => {
-    //   return await calendars()
-    // })
+  // .get('/getinfo', async ({ request, response }) => {
+  //   return await getbasicInfo();
+  // })
+  // .get('/calendars', async ({ request, response }) => {
+  //   return await calendars()
+  // })
 
 
 );
 
-
-
-
-
-
-
-
-
-
-
-
-
-app.post('/addimg', async (req, res) => {
-  if (req.method === 'POST' && req.headers['content-type']?.startsWith('multipart/form-data')) {
-    const form = new formidable.IncomingForm();
-    form.uploadDir = './uploads'; // ปรับตาม path ที่คุณต้องการ
-    form.keepExtensions = true;
-
-    form.parse(req, async (err, fields, files) => {
-      if (err) {
-        res.status(500).send('Error parsing form data');
-        return;
-      }
-
-      try {
-        const file = files.image[0]; // ดึงไฟล์จาก req.files
-        if (!file) {
-          res.status(400).send('No file uploaded.');
-          return;
-        }
-
-        const filename = file.originalFilename;
-        const buffer = fs.readFileSync(file.filepath);
-        const mimetype = file.mimetype;
-
-        const result = await addimg(filename, buffer, mimetype);
-        res.send(result);
-      } catch (err) {
-        console.error('Error uploading file:', err);
-        res.status(500).send('Failed to upload file');
-      }
-    });
-  } else {
-    res.status(400).send('Invalid request');
+app.post(
+  "/upload",
+  async ({ body }) => {
+    return RegisteredVillageController.addVillages(body);
+  },
+  {
+    tags: ["Registered_Village"],
+    body: t.Object({
+      logo: t.File({ description: "logo" }), // แค่ฟิลด์ logo เท่านั้น
+    }),
+    type: "formdata",
+    required: ["logo"], // ระบุว่าฟิลด์ logo เป็นสิ่งจำเป็น
   }
-});
-
-
-
+);
 
 
 
