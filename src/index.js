@@ -1,10 +1,6 @@
 import { Elysia,t } from 'elysia';
 import { cors } from '@elysiajs/cors'
-import formidable from 'formidable';
-import { cookie } from '@elysiajs/cookie'
-import fs from 'fs';
-import multer from 'multer';
-import { nanoid } from 'nanoid';
+
 import {
   graphmentalhealthchecklist,
   graphappointmentforgradelevel,
@@ -94,7 +90,8 @@ import {
 } from "./controller/article"
 
 import {
-  RegisteredVillageController
+  RegisteredVillageController,
+  getimg
 } from "./controller/image"
 
 
@@ -390,20 +387,52 @@ app.group(
 
 );
 
-app.post(
-  "/upload",
-  async ({ body }) => {
-    return RegisteredVillageController.addVillages(body);
-  },
-  {
-    tags: ["Registered_Village"],
-    body: t.Object({
-      logo: t.File({ description: "logo" }), // แค่ฟิลด์ logo เท่านั้น
-    }),
-    type: "formdata",
-    required: ["logo"], // ระบุว่าฟิลด์ logo เป็นสิ่งจำเป็น
-  }
+
+
+app.group(
+  'api/img',
+  {},
+  (app) => app
+  .post(
+    "/upload",
+    async ({ body }) => {
+      return RegisteredVillageController.addVillages(body);
+    },
+    {
+      tags: ["Registered_Village"],
+      body: t.Object({
+        logo: t.File({ description: "logo" }), // แค่ฟิลด์ logo เท่านั้น
+      }),
+      type: "formdata",
+      required: ["logo"], // ระบุว่าฟิลด์ logo เป็นสิ่งจำเป็น
+    }
+  )
+
+  .get('/get/:id', getimg)
 );
+
+app.group(
+  'api/test',
+  {},
+  (app) => app
+  .post(
+    "/upload",
+    async ({ body }) => {
+      return test.addVillages(body);
+    },
+    {
+      tags: ["Registered_Village"],
+      body: t.Object({
+        logo: t.File({ description: "logo" }), // แค่ฟิลด์ logo เท่านั้น
+      }),
+      type: "formdata",
+      required: ["logo"], // ระบุว่าฟิลด์ logo เป็นสิ่งจำเป็น
+    }
+  )
+
+ 
+);
+
 
 
 
