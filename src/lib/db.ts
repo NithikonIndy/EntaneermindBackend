@@ -17,15 +17,15 @@ export const pool = new Pool({
 });
 
 // Connect to the MongoDB database
-const mongoDBURI = process.env.MONGODB_URI ?? 'mongodb+srv://projectse261361:Project123456789@entaneermind.wouj6.mongodb.net/?retryWrites=true&w=majority&appName=Entaneermind';
+// const mongoDBURI = process.env.MONGODB_URI ?? 'mongodb+srv://projectse261361:Project123456789@entaneermind.wouj6.mongodb.net/?retryWrites=true&w=majority&appName=Entaneermind';
 
-mongoose.connect(mongoDBURI)
-.then(() => {
-  console.log("Connected to database");
-})
-.catch((e) => console.log(e));
+// mongoose.connect(mongoDBURI)
+// .then(() => {
+//   console.log("Connected to database");
+// })
+// .catch((e) => console.log(e));
 
-export default mongoose;
+// export default mongoose;
 
 
 

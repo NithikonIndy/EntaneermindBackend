@@ -1,4 +1,4 @@
-import { Elysia,t } from 'elysia';
+import { Elysia, t } from 'elysia';
 import { cors } from '@elysiajs/cors'
 
 import {
@@ -91,7 +91,9 @@ import {
 
 import {
   RegisteredVillageController,
-  getimg
+  getimg,
+  test,
+  getimgtest
 } from "./controller/image"
 
 
@@ -389,48 +391,50 @@ app.group(
 
 
 
+// app.group(
+//   'api/img',
+//   {},
+//   (app) => app
+//   .post(
+//     "/upload",
+//     async ({ body }) => {
+//       return RegisteredVillageController.addVillages(body);
+//     },
+//     {
+//       tags: ["Registered_Village"],
+//       body: t.Object({
+//         logo: t.File({ description: "logo" }), // แค่ฟิลด์ logo เท่านั้น
+//       }),
+//       type: "formdata",
+//       required: ["logo"], // ระบุว่าฟิลด์ logo เป็นสิ่งจำเป็น
+//     }
+//   )
+
+//   .get('/get/:id', getimg)
+// );
+
 app.group(
   'api/img',
   {},
   (app) => app
-  .post(
-    "/upload",
-    async ({ body }) => {
-      return RegisteredVillageController.addVillages(body);
-    },
-    {
-      tags: ["Registered_Village"],
-      body: t.Object({
-        logo: t.File({ description: "logo" }), // แค่ฟิลด์ logo เท่านั้น
-      }),
-      type: "formdata",
-      required: ["logo"], // ระบุว่าฟิลด์ logo เป็นสิ่งจำเป็น
-    }
-  )
+    .post(
+      "/upload",
+      async (req) => {
+        const { logo, text_content } = req.body; // ดึงข้อมูลจาก body
+        return test.addVillages({ logo, text_content });
+      },
+      {
+        tags: ["Registered_Village"],
+        body: t.Object({
+          logo: t.File({ description: "logo" }), // ฟิลด์ logo
+          text_content: t.String({ description: "Text Content" }), // เพิ่มฟิลด์ text_content
+        }),
+        type: "formdata",
+        required: ["logo", "text_content"], // ระบุว่าฟิลด์ logo และ text_content เป็นสิ่งจำเป็น
+      }
+    )
+    .get('/get', getimgtest)
 
-  .get('/get/:id', getimg)
-);
-
-app.group(
-  'api/test',
-  {},
-  (app) => app
-  .post(
-    "/upload",
-    async ({ body }) => {
-      return test.addVillages(body);
-    },
-    {
-      tags: ["Registered_Village"],
-      body: t.Object({
-        logo: t.File({ description: "logo" }), // แค่ฟิลด์ logo เท่านั้น
-      }),
-      type: "formdata",
-      required: ["logo"], // ระบุว่าฟิลด์ logo เป็นสิ่งจำเป็น
-    }
-  )
-
- 
 );
 
 
