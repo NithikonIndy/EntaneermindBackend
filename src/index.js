@@ -93,7 +93,8 @@ import {
   RegisteredVillageController,
   getimg,
   test,
-  getimgtest
+  getimgtest,
+  delimgtest
 } from "./controller/image"
 
 
@@ -392,7 +393,7 @@ app.group(
 
 
 // app.group(
-//   'api/img',
+//   'api/test',
 //   {},
 //   (app) => app
 //   .post(
@@ -403,7 +404,7 @@ app.group(
 //     {
 //       tags: ["Registered_Village"],
 //       body: t.Object({
-//         logo: t.File({ description: "logo" }), // แค่ฟิลด์ logo เท่านั้น
+//         logo: t.Array(t.File({ description: "logo" })), // แค่ฟิลด์ logo เท่านั้น
 //       }),
 //       type: "formdata",
 //       required: ["logo"], // ระบุว่าฟิลด์ logo เป็นสิ่งจำเป็น
@@ -419,14 +420,13 @@ app.group(
   (app) => app
     .post(
       "/upload",
-      async (req) => {
-        const { logo, text_content } = req.body; // ดึงข้อมูลจาก body
-        return test.addVillages({ logo, text_content });
+      async ({ body }) => {
+        return test.addVillages(body);
       },
       {
         tags: ["Registered_Village"],
         body: t.Object({
-          logo: t.File({ description: "logo" }), // ฟิลด์ logo
+          logo: t.Array(t.File({ description: "logo" })), // ฟิลด์ logo
           text_content: t.String({ description: "Text Content" }), // เพิ่มฟิลด์ text_content
         }),
         type: "formdata",
@@ -434,6 +434,10 @@ app.group(
       }
     )
     .get('/get', getimgtest)
+    .put('/delimgtest',async (req) => {
+      const { id } = await req.body;
+      return await delimgtest({ id });
+    })
 
 );
 
