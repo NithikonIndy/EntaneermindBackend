@@ -303,8 +303,8 @@ app.group(
       return await cancelappointmentroom1({ event_id });
     })
     .put('/getidcalendar', async (request) => {
-      const { start_datetime, end_datetime } = request.body;
-      return await getidcalendar1({ start_datetime, end_datetime });
+      const { start_datetime, end_datetime ,room} = request.body;
+      return await getidcalendar1({ start_datetime, end_datetime ,room});
     })
     .put('/checkappointment', async (request) => {
       const { studentid } = request.body;
@@ -325,8 +325,8 @@ app.group(
       return await cancelappointmentroom2({ event_id });
     })
     .put('/getidcalendar', async (request) => {
-      const { start_datetime, end_datetime } = request.body;
-      return await getidcalendar2({ start_datetime, end_datetime });
+      const { start_datetime, end_datetime ,room} = request.body;
+      return await getidcalendar2({ start_datetime, end_datetime ,room});
     })
     .put('/checkappointment', async (request) => {
       const { studentid } = request.body;

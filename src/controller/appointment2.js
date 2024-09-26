@@ -19,9 +19,8 @@ export const cancelappointmentroom2 = async (request) => {
         const text_infor = 'DELETE FROM informationusers_room1 WHERE event_id = $1';
         const values_infor = [event_id];
 
-        await client.query(text, values);
         await client.query(text_infor, values_infor);
-
+        await client.query(text, values);
 
 
     } catch (err) {
@@ -39,23 +38,35 @@ export const getidcalendar2 = async (request) => {
     let client = await pool.connect();
     try {
 
-        const { start_datetime, end_datetime } = request;
+        const { start_datetime, end_datetime, room } = request;
 
-        if (!start_datetime && end_datetime) {
+        if (!start_datetime && !end_datetime && !room) {
             return { message: "Please provide a valid cmuaccount" };
         }
 
+        // Query เพื่อนำข้อมูลมาก่อน
         const query = `
-        SELECT acr.event_id 
-        FROM admin_conseling_room2 acr 
-        WHERE start_datetime = $1 AND  end_datetime = $2
+         SELECT acr.event_id 
+         FROM admin_conseling_room1 acr 
+         WHERE start_datetime = $1 AND end_datetime = $2 AND room = $3
+         `;
+
+        const values = [start_datetime, end_datetime, room];
+
+        const result = await client.query(query, values)
+
+        const event_id = result.rows[0].event_id
+
+        const query_del = `
+        DELETE FROM admin_conseling_room1 WHERE event_id = $1 
       `;
-        const values = [start_datetime, end_datetime];
 
-        return await client.query(query, values);
-        // await client.query(text_infor, values_infor);
+        const values_del = [event_id];
+        console.log(values_del);
 
+        await client.query(query_del, values_del)
 
+        return result.rows;
 
     } catch (err) {
         console.error('Error executing query:', err);
@@ -113,10 +124,10 @@ export const addtimeappointment2 = async (request) => {
             return { message: "Please provide a valid data" };
         }
 
-       
+
         await client.query(text, values);
         await client.query(text_infor, values_infor)
-       
+
 
     } catch (err) {
         console.error('Error executing query:', err);

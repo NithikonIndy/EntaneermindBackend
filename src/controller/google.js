@@ -46,6 +46,17 @@ export const redirect = async (req, res) => {
         oauth2Client.setCredentials(tokens);
         const userInfo = await oauth2.userinfo.get();
 
+        calendar.calendarList.list({}, (err, response) => {
+            if (err) {
+                // Handle error if the API request fails
+                console.error('Error fetching calendars', err);
+                return;
+            }
+            // Send the list of calendars as JSON
+            const calendars = response.data.items;
+            console.log(calendars);
+    })
+
         // if (tokens) {
         //     const { access_token, refresh_token, scope, token_type, expiry_date } = tokens;
         //     const text = 'INSERT INTO oauth_tokens(access_token,refresh_token, scope, token_type, expiry_date) VALUES($1, $2, $3, $4, $5) RETURNING *';
@@ -133,7 +144,7 @@ export const events = async () => {
 
         oauth2Client.setCredentials(tokens);
 
-        const calendarId = "nithikon1404@gmail.com"; // assuming req contains a calendarId property
+        const calendarId = "entaneermindfriend1@gmail.com"; // assuming req contains a calendarId property
 
         const cmuAccount = "nithikon_jansanitsri@cmu.ac.th";
 
@@ -225,7 +236,7 @@ export const events2 = async () => {
 
         oauth2Client.setCredentials(tokens);
 
-        const calendarId = "nithikon440@gmail.com"; // assuming req contains a calendarId property
+        const calendarId = "entaneermindfriend2@gmail.com"; // assuming req contains a calendarId property
 
         const cmuAccount = "nithikon_jansanitsri@cmu.ac.th";
 
@@ -283,7 +294,7 @@ export const events2 = async () => {
                     // console.log("this is eventId", eventId);
 
                     // try {
-                    //     await client.query('DELETE FROM admin_conseling_room2 WHERE event_id = $1', [eventId]);
+                    //     await client.query('DELETE FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
                     // } catch (deleteError) {
                     //     console.error("Error deleting event from the database:", deleteError);
                     // }
@@ -345,7 +356,7 @@ export const createevent = async (request) => {
 
             oauth2Client.setCredentials(tokens);
 
-            const calendarId = "nithikon1404@gmail.com"; // assuming req contains a calendarId property
+            const calendarId = "entaneermindfriend1@gmail.com"; // assuming req contains a calendarId property
 
             const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
@@ -413,7 +424,7 @@ export const createevent2 = async (request) => {
 
             oauth2Client.setCredentials(tokens);
 
-            const calendarId = "nithikon440@gmail.com"; // assuming req contains a calendarId property
+            const calendarId = "entaneermindfriend2@gmail.com"; // assuming req contains a calendarId property
 
             const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
@@ -457,7 +468,7 @@ export const deleteevent = async (request) => {
         // console.log("This is eventId ",event_id);
 
 
-        const GOOGLE_CALENDAR_ID = "nithikon1404@gmail.com";
+        const GOOGLE_CALENDAR_ID = "entaneermindfriend1@gmail.com";
         const GOOGLE_EVENT_ID = event_id;
         const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
@@ -466,7 +477,7 @@ export const deleteevent = async (request) => {
             eventId: GOOGLE_EVENT_ID,
         });
 
-        return NextResponse.json({ message: "Event successfully deleted!" });
+        return ({ message: "Event successfully deleted!" });
     } catch (error) {
         console.log("Can't Delete ", error);
         return NextResponse.json({ error: "Failed to delete event" }, { status: 500 });
@@ -490,7 +501,7 @@ export const deleteevent2 = async (request) => {
         // console.log("This is eventId ",event_id);
 
 
-        const GOOGLE_CALENDAR_ID = "nithikon440@gmail.com";
+        const GOOGLE_CALENDAR_ID = "entaneermindfriend2@gmail.com";
         const GOOGLE_EVENT_ID = event_id;
         const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
@@ -499,7 +510,7 @@ export const deleteevent2 = async (request) => {
             eventId: GOOGLE_EVENT_ID,
         });
 
-        return NextResponse.json({ message: "Event successfully deleted!" });
+        return ({ message: "Event successfully deleted!" });
     } catch (error) {
         console.log("Can't Delete ", error);
         return NextResponse.json({ error: "Failed to delete event" }, { status: 500 });
