@@ -106,7 +106,7 @@ const port = 3001;
 
 
 app.use(cors({
-  origin: ['http://localhost:3000'],
+  origin: ['https://project491x492.vercel.app'],
   methods: 'GET, POST, PUT, DELETE, PATCH',
   credentials: true,
 }));
