@@ -53,8 +53,8 @@ export const redirect = async (req, res) => {
                 return;
             }
             // Send the list of calendars as JSON
-            const calendars = response.data.items;
-            console.log(calendars);
+            // const calendars = response.data.items;
+            // console.log(calendars);
     })
 
         // if (tokens) {
@@ -77,6 +77,8 @@ export const redirect = async (req, res) => {
         //     }
         // }
 
+        console.log(userInfo.data);
+        
         return { info: userInfo.data }; // ส่ง data กลับ
 
     } catch (error) {
@@ -119,8 +121,7 @@ export const calendars = async (request, res) => {
                 return;
             }
             // Send the list of calendars as JSON
-            const calendars = response.data.items;
-            console.log(calendars);
+            // const calendars = response.data.items;
 
             return { message: 'show' };
         });
@@ -364,7 +365,7 @@ export const createevent = async (request) => {
                 calendarId: calendarId,
                 requestBody: event,
             }).then((response) => {
-                console.log('Event created: %s', response.data);
+                // console.log('Event created: %s', response.data);
                 // return new NextResponse(JSON.stringify({ message: "Event successfully created!" }), { status: 200 });
             }).catch((err) => {
                 console.error('There was an error contacting the Calendar service:', err);
@@ -432,7 +433,7 @@ export const createevent2 = async (request) => {
                 calendarId: calendarId,
                 requestBody: event,
             }).then((response) => {
-                console.log('Event created: %s', response.data);
+                // console.log('Event created: %s', response.data);
                 // return new NextResponse(JSON.stringify({ message: "Event successfully created!" }), { status: 200 });
             }).catch((err) => {
                 console.error('There was an error contacting the Calendar service:', err);
@@ -465,9 +466,6 @@ export const deleteevent = async (request) => {
         oauth2Client.setCredentials(tokens);
         const { event_id } = request;
 
-        // console.log("This is eventId ",event_id);
-
-
         const GOOGLE_CALENDAR_ID = "entaneermindfriend1@gmail.com";
         const GOOGLE_EVENT_ID = event_id;
         const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
@@ -497,9 +495,6 @@ export const deleteevent2 = async (request) => {
 
         oauth2Client.setCredentials(tokens);
         const { event_id } = request;
-
-        // console.log("This is eventId ",event_id);
-
 
         const GOOGLE_CALENDAR_ID = "entaneermindfriend2@gmail.com";
         const GOOGLE_EVENT_ID = event_id;
