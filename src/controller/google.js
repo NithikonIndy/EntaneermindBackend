@@ -76,9 +76,7 @@ export const redirect = async (req, res) => {
         //       client.release();
         //     }
         // }
-
-        console.log(userInfo.data);
-        
+    
         return { info: userInfo.data }; // ส่ง data กลับ
 
     } catch (error) {
