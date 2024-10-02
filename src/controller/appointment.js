@@ -123,7 +123,7 @@ export const checkappointment = async (request) => {
         SELECT u.firstname_lastname, u.studentid, ucr.start_datetime, ucr.end_datetime, ucr.room, ucr.event_id
         FROM users u
         INNER JOIN user_conseling_room1 ucr ON u.personid = ucr.personid
-        WHERE u.studentid = $1
+        WHERE u.studentid = $1 and ucr.start_datetime::timestamptz > NOW()
         limit 1 ;
         `;
 
