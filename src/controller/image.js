@@ -176,52 +176,35 @@ export const getimgtest = async (request, res) => {
     const images = result.rows;
     const expiry = 60 * 60;
 
-    const img= await minioClient.presignedGetObject(bucket, images.image_url, expiry)
+    const imageWithUrls = await Promise.all(images.map(async img => {
+      // ตรวจสอบว่ามีค่า image_url หรือไม่ และแปลงให้เป็น array ถ้าเป็น string
+      let imageUrls = [];
 
-    console.log("images",images);
+      if (img.image_url) {
+        // สมมติว่า image_url เป็น comma-separated string ต้องแปลงเป็น array
+        imageUrls = typeof img.image_url === 'string' ? img.image_url.split(',') : img.image_url;
+      }
 
-    console.log("minio",minioClient.presignedGetObject(bucket, images.image_url, expiry));
-    
-    
+      // สร้าง URL สำหรับแต่ละภาพใน imageUrls
+      const urls = await Promise.all(imageUrls.map(async url => 
+        await minioClient.presignedGetObject(bucket, url.trim(), expiry)
+      ));
 
-    // const imageWithUrls = await Promise.all(images.map(async img => {
-    //   // ถ้า image_url ไม่มีค่า ให้ตั้งค่าเป็นอาร์เรย์ว่าง
-    //   if (!img.image_url) {
-    //     return {
-    //       ...img,
-    //       image_url: [], // คืนค่าอาร์เรย์ว่างหากไม่มี image_url
-    //     };
-    //   }
+      return {
+        ...img, // เก็บค่าทั้งหมดใน img เดิมไว้
+        image_url: urls // นำ URL ที่สร้างได้ใส่เข้าไป
+      };
+    }));
 
-    //   let imageUrls;
-
-    //   // ตรวจสอบและแปลงค่าของ image_url
-    //   if (typeof img.image_url === 'string') {
-    //     // ลบ {} และ "" ออกจาก string และแปลงเป็นอาร์เรย์
-    //     const cleanedImageUrl = img.image_url.replace(/[{ " }]/g, '').trim();
-    //     imageUrls = cleanedImageUrl.split(',').map(url => url.trim());
-    //   } else {
-    //     imageUrls = [img.image_url];
-    //   }
-
-    //   // สร้าง URL สำหรับแต่ละภาพ
-    //   const urls = await Promise.all(imageUrls.map(async url =>
-    //     await minioClient.presignedGetObject(bucket, url, expiry)
-    //   ));
-
-    //   return {
-    //     ...img, // เก็บค่าทั้งหมดใน img เดิมไว้
-    //     image_url: urls // นำ URL ที่สร้างได้ใส่เข้าไป
-    //   };
-    // }));
-
-    // return minioClient.presignedGetObject(bucket, images.image_url, expiry); // ส่งกลับข้อมูลที่สร้างแล้ว
+    return imageWithUrls; // ส่งกลับข้อมูลที่สร้างแล้ว
 
   } catch (error) {
     console.log("Can't get img", error);
     res.status(500).send("Internal server error"); // ส่งข้อความเมื่อเกิดข้อผิดพลาด
   }
 };
+
+
 
 
 export const delimgtest = async (request, res) => {
