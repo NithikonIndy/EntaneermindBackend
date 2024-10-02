@@ -31,7 +31,7 @@ export const pool = new Pool({
 
 
 export const minioClient = new Minio.Client({
-  endPoint: 'localhost',
+  endPoint: '127.0.0.1',
   port: 9011,
   useSSL: false,
   accessKey: 'Entaneer_mind',
