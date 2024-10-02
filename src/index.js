@@ -43,6 +43,7 @@ import {
   insertinformation,
   afterlogin,
   getmailandtime,
+  checklogin,
 } from "./controller/user"
 
 import {
@@ -262,7 +263,10 @@ app.group(
     .get('/getmailandtime', async () => {
       return await getmailandtime();
     })
-
+    .put('/checklogin', async (request) => {
+      const { studentId } = request.body;
+      return await checklogin({ studentId });
+    })
 
 );
 

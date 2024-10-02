@@ -101,3 +101,23 @@ WHERE (ucr.start_datetime::timestamptz)
         }
     }
 };
+
+
+
+export const checklogin = async (request) => {
+    let client = await pool.connect();
+    try {
+        const { studentId } = request;
+        const result = await client.query('SELECT * FROM users WHERE studentid = $1', [studentId]);
+       
+        const temp = result.rows[0]
+        return temp
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw new Error('Failed to fetch data');
+    } finally {
+        if (client) {
+            client.release(); // ปลดปล่อยการเชื่อมต่อ
+        }
+    }
+};
