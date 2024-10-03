@@ -84,11 +84,11 @@ export const checkappointment2 = async (request) => {
         const { studentid } = request;
 
         const query = `
-SELECT u.firstname_lastname, u.studentid, ucr2.start_datetime, ucr2.end_datetime, ucr2.room, ucr2.event_id
-FROM users u
-INNER JOIN user_conseling_room1 ucr2 ON u.personid = ucr2.personid
-WHERE u.studentid = $1 and ucr2.start_datetime::timestamptz > NOW() and ucr.room='conseling_room2
-limit 1 ;
+        SELECT u.firstname_lastname, u.studentid, ucr.start_datetime, ucr.end_datetime, ucr.room, ucr.event_id
+        FROM users u
+        INNER JOIN user_conseling_room1 ucr ON u.personid = ucr.personid
+        WHERE u.studentid = $1 and ucr.start_datetime::timestamptz > NOW() and ucr.room='conseling_room2'
+        limit 1 ;
         `;
 
         const result = await client.query(query, [studentid]);
