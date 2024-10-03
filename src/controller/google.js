@@ -369,7 +369,7 @@ export const createevent = async (request) => {
         }
     } catch (error) {
         console.error('Error parsing request', error);
-        return new NextResponse('Invalid request body!', { status: 400 });
+        throw new Error('Invalid request body!');
     }
 };
 
@@ -437,7 +437,7 @@ export const createevent2 = async (request) => {
         }
     } catch (error) {
         console.error('Error parsing request', error);
-        return new NextResponse('Invalid request body!', { status: 400 });
+        throw new Error('Invalid request body!');
     }
 };
 
@@ -467,7 +467,7 @@ export const deleteevent = async (request) => {
         return ({ message: "Event successfully deleted!" });
     } catch (error) {
         console.log("Can't Delete ", error);
-        return NextResponse.json({ error: "Failed to delete event" }, { status: 500 });
+        throw new Error("Failed to delete event");
     }
 };
 
@@ -497,7 +497,7 @@ export const deleteevent2 = async (request) => {
         return ({ message: "Event successfully deleted!" });
     } catch (error) {
         console.log("Can't Delete ", error);
-        return NextResponse.json({ error: "Failed to delete event" }, { status: 500 });
+        throw new Error("Failed to delete event");
     }
 };
 

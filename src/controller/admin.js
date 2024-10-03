@@ -96,6 +96,7 @@ export const checkclosetimeslot = async (request) => {
             WHERE ucr.start_datetime::timestamptz 
             BETWEEN $1 AND $2
             AND ucr.room = $3
+            ORDER BY ucr.start_datetime
         `;
         const values = [start_datetime, end_datetime, room];
 
