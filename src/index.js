@@ -35,6 +35,7 @@ import {
   deltimeroom,
   gettimeroom2,
   deltimeroom2,
+  checkclosetimeslot,
 } from "./controller/admin"
 
 import {
@@ -229,6 +230,10 @@ app.group(
     })
     .delete('/deltimeroom2', async () => {
       return await deltimeroom2();
+    })
+    .put('/checkclosetimeslot', async () =>{
+      const { start_datetime, end_datetime, room } = request.body;
+      return await checkclosetimeslot({ start_datetime, end_datetime, room })
     })
 
 );

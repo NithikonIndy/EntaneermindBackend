@@ -81,6 +81,37 @@ export const closetimeslot = async (request) => {
     }
 };
 
+export const checkclosetimeslot = async (request) => {
+    let client = await pool.connect();
+    try {
+        const { start_datetime, end_datetime, room } = request;
+
+        if (!start_datetime || !end_datetime || !room) {
+            return { message: "Please provide valid start_datetime, end_datetime, and room" };
+        }
+
+        const text = `
+            SELECT * 
+            FROM user_conseling_room1 ucr
+            WHERE ucr.start_datetime::timestamptz 
+            BETWEEN $1 AND $2
+            AND ucr.room = $3
+        `;
+        const values = [start_datetime, end_datetime, room];
+
+        const result = await client.query(text, values);
+        return result.rows;  // Return all rows, as there could be more than one matching slot
+
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw new Error('Failed to check time slots');
+    } finally {
+        if (client) {
+            client.release(); // Release the connection
+        }
+    }
+};
+
 
 
 export const gettimeroom = async () => {
