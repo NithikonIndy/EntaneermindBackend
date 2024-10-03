@@ -112,6 +112,36 @@ export const checkclosetimeslot = async (request) => {
     }
 };
 
+export const getclosetimeslot = async (request) => {
+    let client = await pool.connect();
+    try {
+        const text = `
+           SELECT *
+            FROM admin_conseling_room1 acr
+            WHERE acr.start_datetime::timestamptz IN (
+                SELECT acr.start_datetime::timestamptz
+                FROM admin_conseling_room1 acr
+                WHERE acr.start_datetime::timestamptz > NOW()
+                EXCEPT
+                SELECT ucr.start_datetime::timestamptz
+                FROM user_conseling_room1 ucr
+                WHERE ucr.start_datetime::timestamptz > NOW()
+            );
+        `;
+
+        const result = await client.query(text);
+        return result.rows;  // Return all rows, as there could be more than one matching slot
+
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw new Error('Failed to check time slots');
+    } finally {
+        if (client) {
+            client.release(); // Release the connection
+        }
+    }
+};
+
 
 
 export const gettimeroom = async () => {

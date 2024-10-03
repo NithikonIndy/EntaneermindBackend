@@ -97,8 +97,7 @@ export const getidcalendar1 = async (request) => {
       `;
 
         const values_del = [event_id];
-        console.log(values_del);
-
+        
         await client.query(query_del, values_del)
 
         return result.rows;

@@ -36,6 +36,7 @@ import {
   gettimeroom2,
   deltimeroom2,
   checkclosetimeslot,
+  getclosetimeslot,
 } from "./controller/admin"
 
 import {
@@ -107,7 +108,7 @@ const port = 3001;
 
 
 app.use(cors({
-  origin: ['https://project491x492.vercel.app','http://localhost:3000'],
+  origin: ['https://project491x492.vercel.app', 'http://localhost:3000'],
   methods: 'GET, POST, PUT, DELETE, PATCH',
   credentials: true,
 }));
@@ -231,9 +232,12 @@ app.group(
     .delete('/deltimeroom2', async () => {
       return await deltimeroom2();
     })
-    .put('/checkclosetimeslot', async () =>{
+    .put('/checkclosetimeslot', async (request) => {
       const { start_datetime, end_datetime, room } = request.body;
       return await checkclosetimeslot({ start_datetime, end_datetime, room })
+    })
+    .get('/getclosetimeslot', async () => {
+      return await getclosetimeslot()
     })
 
 );
@@ -308,8 +312,8 @@ app.group(
       return await cancelappointmentroom1({ event_id });
     })
     .put('/getidcalendar', async (request) => {
-      const { start_datetime, end_datetime ,room} = request.body;
-      return await getidcalendar1({ start_datetime, end_datetime ,room});
+      const { start_datetime, end_datetime, room } = request.body;
+      return await getidcalendar1({ start_datetime, end_datetime, room });
     })
     .put('/checkappointment', async (request) => {
       const { studentid } = request.body;
@@ -330,8 +334,8 @@ app.group(
       return await cancelappointmentroom2({ event_id });
     })
     .put('/getidcalendar', async (request) => {
-      const { start_datetime, end_datetime ,room} = request.body;
-      return await getidcalendar2({ start_datetime, end_datetime ,room});
+      const { start_datetime, end_datetime, room } = request.body;
+      return await getidcalendar2({ start_datetime, end_datetime, room });
     })
     .put('/checkappointment', async (request) => {
       const { studentid } = request.body;
@@ -439,7 +443,7 @@ app.group(
       }
     )
     .get('/get', getimgtest)
-    .put('/delimgtest',async (req) => {
+    .put('/delimgtest', async (req) => {
       const { id } = await req.body;
       return await delimgtest({ id });
     })
