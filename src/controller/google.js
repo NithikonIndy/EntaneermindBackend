@@ -145,7 +145,6 @@ export const events = async () => {
 
         const calendarId = "entaneermindfriend1@gmail.com"; // assuming req contains a calendarId property
 
-        const cmuAccount = "nithikon_jansanitsri@cmu.ac.th";
 
         const room = "conseling_room1";
 
@@ -167,9 +166,6 @@ export const events = async () => {
             // return new NextResponse('No events found!', { status: 404 });
         }
 
-        const searchAdmin = await client.query('SELECT * FROM admins WHERE cmuAccount = $1', [cmuAccount]);
-        const personIdAdmin = searchAdmin.rows[0].personid;
-
 
         const events = response.data.items;
 
@@ -185,8 +181,8 @@ export const events = async () => {
 
                 if (checkExisting.rowCount === 0) {
                     // Insert the event if it does not exist
-                    const text = 'INSERT INTO admin_conseling_room1(event_id, start_datetime, end_datetime, room, personid) VALUES($1, $2, $3, $4, $5) RETURNING *';
-                    const values = [eventId, startDateTime, endDateTime, room, personIdAdmin];
+                    const text = 'INSERT INTO admin_conseling_room1(event_id, start_datetime, end_datetime, room) VALUES($1, $2, $3, $4) RETURNING *';
+                    const values = [eventId, startDateTime, endDateTime, room];
 
                     await client.query(text, values);
                 }
@@ -237,8 +233,6 @@ export const events2 = async () => {
 
         const calendarId = "entaneermindfriend2@gmail.com"; // assuming req contains a calendarId property
 
-        const cmuAccount = "nithikon_jansanitsri@cmu.ac.th";
-
         const room = "conseling_room2";
 
         const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
@@ -258,9 +252,6 @@ export const events2 = async () => {
             return new NextResponse('No events found!', { status: 404 });
         }
 
-        const searchAdmin = await client.query('SELECT * FROM admins WHERE cmuAccount = $1', [cmuAccount]);
-        const personIdAdmin = searchAdmin.rows[0].personid;
-
         const events = response.data.items;
 
 
@@ -276,8 +267,8 @@ export const events2 = async () => {
 
                 if (checkExisting.rowCount === 0) {
                     // Insert the event if it does not exist
-                    const text = 'INSERT INTO admin_conseling_room1(event_id, start_datetime, end_datetime, room, personid) VALUES($1, $2, $3, $4, $5) RETURNING *';
-                    const values = [eventId, startDateTime, endDateTime, room, personIdAdmin];
+                    const text = 'INSERT INTO admin_conseling_room1(event_id, start_datetime, end_datetime, room) VALUES($1, $2, $3, $4) RETURNING *';
+                    const values = [eventId, startDateTime, endDateTime, room];
 
                     await client.query(text, values);
                 }

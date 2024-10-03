@@ -31,7 +31,6 @@ import {
   insertaddtodatabase,
   checkadmin,
   closetimeslot,
-  closetimeslot2,
   gettimeroom,
   deltimeroom,
   gettimeroom2,
@@ -215,13 +214,10 @@ app.group(
       return await checkadmin({ cmuAccount });
     })
     .post('/closetimeslot', async (request) => {
-      const { start_datetime, end_datetime, personid, room } = request.body;
-      return await closetimeslot({ start_datetime, end_datetime, personid, room });
+      const { start_datetime, end_datetime, room } = request.body;
+      return await closetimeslot({ start_datetime, end_datetime, room });
     })
-    .post('/closetimeslot2', async (request) => {
-      const { start_datetime, end_datetime, personid } = request.body;
-      return await closetimeslot2({ start_datetime, end_datetime, personid });
-    })
+
     .get('/gettimeroom', async () => {
       return await gettimeroom();
     })
