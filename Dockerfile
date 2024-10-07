@@ -13,7 +13,7 @@ RUN bun install
 COPY . .
 
 # Expose the port your application runs on (change if necessary)
-EXPOSE 3000
+EXPOSE 3001
 
 # Start your Bun application
 CMD ["bun", "run", "dev"]
