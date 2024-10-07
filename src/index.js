@@ -108,7 +108,7 @@ const port = 3001;
 
 
 app.use(cors({
-  origin: ['https://project491x492.vercel.app', 'http://localhost:3000'],
+  origin: ['https://project491x492.vercel.app', 'http://localhost:3000','https://mind.eng.cmu.ac.th'],
   methods: 'GET, POST, PUT, DELETE, PATCH',
   credentials: true,
 }));
