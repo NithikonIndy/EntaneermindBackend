@@ -46,7 +46,3 @@ package-lock.json
 
 
 /uploads
-
-docker-compose.yml
-
-Dockerfile
