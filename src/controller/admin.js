@@ -148,7 +148,7 @@ export const getclosetimeslot = async (request) => {
 export const gettimeroom = async () => {
     let client = await pool.connect();
     try {
-        const result = await client.query(`SELECT * FROM admin_conseling_room1 acr WHERE acr.room = 'conseling_room1'`)
+        const result = await client.query(`SELECT * FROM admin_conseling_room1 acr WHERE acr.room = 'conseling_room1' AND acr.start_datetime::timestamptz > NOW()`)
         return result.rows
 
     } catch (err) {
@@ -178,7 +178,7 @@ export const deltimeroom = async (request) => {
 export const gettimeroom2 = async () => {
     let client = await pool.connect();
     try {
-        const result = await client.query(`SELECT * FROM admin_conseling_room1 acr WHERE acr.room = 'conseling_room2'`)
+        const result = await client.query(`SELECT * FROM admin_conseling_room1 acr WHERE acr.room = 'conseling_room2' AND acr.start_datetime::timestamptz > NOW()`)
         return result.rows
 
     } catch (err) {
