@@ -5,22 +5,11 @@ import mongoose from 'mongoose';
 
 dotenv.config(); // โหลดตัวแปรสภาพแวดล้อมจากไฟล์ .env
 
-// export const pool = new Pool({
-//   user: process.env.PGSQL_USER,
-//   host: process.env.PGSQL_HOST,
-//   database: process.env.PGSQL_DATABASE,
-//   password: process.env.PGSQL_PASSWORD,
-//   port: 5432,
-//   ssl: {
-//     rejectUnauthorized: false // Set to true in production if you have a certificate
-//   }
-// });
-
 export const pool = new Pool({
-  user: `default`,
-  host: `ep-empty-dust-a1wnsfia-pooler.ap-southeast-1.aws.neon.tech`,
-  database: `verceldb`,
-  password: `oh80MiHuWFpt`,
+  user: process.env.PGSQL_USER,
+  host: process.env.PGSQL_HOST,
+  database: process.env.PGSQL_DATABASE,
+  password: process.env.PGSQL_PASSWORD,
   port: 5432,
   ssl: {
     rejectUnauthorized: false // Set to true in production if you have a certificate
