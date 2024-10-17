@@ -2,63 +2,25 @@ version: '3.8'
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bun:latest
+    container_name: bunjs
     ports:
       - "3001:3001"
     volumes:
       - .:/app
       - /app/node_modules
     environment:
-      - GOOGLE_ID: 720803559255-ae64jet8mihdeo8nati1sp1hm7e00l7c.apps.googleusercontent.com
-      - GOOGLE_SECRET: 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
-      - REDIRECT_URL: https://mind.eng.cmu.ac.th/redirect #redirect form frontend http://localhost:3000
-      - PGSQL_HOST: ep-empty-dust-a1wnsfia-pooler.ap-southeast-1.aws.neon.tech
-      - PGSQL_PORT: 5432
-      - PGSQL_DATABASE: verceldb
-      - PGSQL_USER: default  
-      - PGSQL_PASSWORD: oh80MiHuWFpt 
+      - GOOGLE_ID=720803559255-ae64jet8mihdeo8nati1sp1hm7e00l7c.apps.googleusercontent.com
+      - GOOGLE_SECRET=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
+      - REDIRECT_URL=https://mind.eng.cmu.ac.th/redirect #redirect form frontend http://localhost:3000
+      - PGSQL_HOST=ep-empty-dust-a1wnsfia-pooler.ap-southeast-1.aws.neon.tech
+      - PGSQL_PORT=5432
+      - PGSQL_DATABASE=verceldb
+      - PGSQL_USER=default  
+      - PGSQL_PASSWORD=oh80MiHuWFpt 
     restart: always
-      
-  #   depends_on:
-  #     - database
 
-  # postgres-db:
-  #   image: postgres:latest
-  #   container_name: postgres-db
-  #   restart: always
-  #   environment:
-  #     - POSTGRES_DB=entaneer_mind
-  #     - POSTGRES_USER=mind
-  #     - POSTGRES_PASSWORD=entaneer_mind
-  #   ports:
-  #     - "5432:5432"
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
 
-  # adminer:
-  #   image: adminer
-  #   restart: always
-  #   ports:
-  #     - "8081:8080"
-   
-  # minio:
-  #   image: minio/minio:latest
-  #   ports:
-  #     - "7000:9000"
-  #     - "7001:9001"
-  #   environment:
-  #     MINIO_ROOT_USER: minioadmin
-  #     MINIO_ROOT_PASSWORD: miniopassword
-  #   volumes:
-  #     - ./volume:/data
-  #   command: server --address ":9001" --console-address ":9000" /data
-  #   restart: always
-
-  # networks:
-  #   default:
-  #   driver: bridge
-
-  # volumes:
-  #   minio_data:
-  #   minio_config:
-  #   postgres_data:
