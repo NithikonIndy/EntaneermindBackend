@@ -35,8 +35,8 @@ export const graphmentalhealthchecklist = async (request) => {
 FROM users u
 JOIN user_conseling_room1 ucr ON u.personid = ucr.personid
 JOIN informationusers_room1 ir ON ucr.event_id = ir.event_id
-                    WHERE ucr.start_datetime BETWEEN $1 AND $2
-                    GROUP BY ir.mental_health_checklist;`;
+WHERE ucr.start_datetime BETWEEN $1 AND $2
+GROUP BY checklist_category;`;
 
     const values = [startdate, enddate];
     client = await pool.connect();
