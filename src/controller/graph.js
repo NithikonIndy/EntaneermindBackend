@@ -12,31 +12,38 @@ export const graphmentalhealthchecklist = async (request) => {
       return { message: "Please provide a date" };
     }
 
-    const text = `SELECT 
+    const text = `WITH SplitData AS (
+  SELECT 
+    u.personid,
+    unnest(string_to_array(ir.mental_health_checklist, ',')) AS checklist_item
+  FROM users u
+  JOIN user_conseling_room1 ucr ON u.personid = ucr.personid
+  JOIN informationusers_room1 ir ON ucr.event_id = ir.event_id
+  WHERE ucr.start_datetime BETWEEN $1 AND $2 
+)
+SELECT 
   CASE 
-    WHEN ir.mental_health_checklist LIKE '%คะแนนแบบวัดพลังใจสูง%' THEN 'คะแนนแบบวัดพลังใจสูง'
-    WHEN ir.mental_health_checklist LIKE '%มีอารมณ์เศร้าอย่างต่อเนื่องหรือเป็นโรคซึมเศร้า(วินิจฉัยโดยแพทย์)%' THEN 'มีอารมณ์เศร้าอย่างต่อเนื่องหรือเป็นโรคซึมเศร้า(วินิจฉัยโดยแพทย์)'
-    WHEN ir.mental_health_checklist LIKE '%ความเศร้าโศกจากการสูญเสีย%' THEN 'ความเศร้าโศกจากการสูญเสีย'
-    WHEN ir.mental_health_checklist LIKE '%บาดแผลทางใจ%' THEN 'บาดแผลทางใจ/ประสบการณ์เลวร้ายในวัยเด็ก'
-    WHEN ir.mental_health_checklist LIKE '%คิดเกี่ยวกับความตาย%' OR ir.mental_health_checklist LIKE '%คิดทำร้ายตัวเอง%' THEN 'ความคิดฆ่าตัวตาย/ความคิดทำร้ายตัวเอง'
-    WHEN ir.mental_health_checklist LIKE '%ปัญหาการปรับตัว%' THEN 'ปัญหาการปรับตัว/ขาดทักษะทางสังคม'
-    WHEN ir.mental_health_checklist LIKE '%ปัญหาความสัมพันธ์ภายในครอบครัว%' THEN 'ปัญหาความสัมพันธ์ภายในครอบครัว'
-    WHEN ir.mental_health_checklist LIKE '%ปัญหาความสัมพันธ์กับคนรัก%' THEN 'ปัญหาความสัมพันธ์กับคนรัก'
-    WHEN ir.mental_health_checklist LIKE '%ปัญหาความสัมพันธ์เพื่อน%' THEN 'ปัญหาความสัมพันธ์เพื่อน'
-    WHEN ir.mental_health_checklist LIKE '%พฤติกรรมเสพติด%' THEN 'พฤติกรรมเสพติด'
-    WHEN ir.mental_health_checklist LIKE '%กลุ่มวิตกกังวล%' THEN 'ปัญหาสุขภาพจิตในกลุ่มวิตกกังวล'
-    WHEN ir.mental_health_checklist LIKE '%เจ็บป่วยทางกาย%' THEN 'มีอาการเจ็บป่วยทางกายจากปัญหาทางจิตใจ'
-    WHEN ir.mental_health_checklist LIKE '%ปัญหาการเรียน%' THEN 'ปัญหาการเรียน/หมดไฟในการเรียน'
-    WHEN ir.mental_health_checklist LIKE '%เข้าใจหรือพัฒนาตนเอง%' THEN 'ต้องการเข้าใจหรือพัฒนาตนเอง/ค้นหาเป้าหมายชีวิต'
-    WHEN ir.mental_health_checklist LIKE '%ปัญหาบุคลิกภาพ%' THEN 'ปัญหาบุคลิกภาพ'
+    WHEN checklist_item LIKE '%คะแนนแบบวัดพลังใจสูง%' THEN 'คะแนนแบบวัดพลังใจสูง'
+    WHEN checklist_item LIKE '%มีอารมณ์เศร้าอย่างต่อเนื่องหรือเป็นโรคซึมเศร้า(วินิจฉัยโดยแพทย์)%' THEN 'มีอารมณ์เศร้าอย่างต่อเนื่องหรือเป็นโรคซึมเศร้า(วินิจฉัยโดยแพทย์)'
+    WHEN checklist_item LIKE '%ความเศร้าโศกจากการสูญเสีย%' THEN 'ความเศร้าโศกจากการสูญเสีย'
+    WHEN checklist_item LIKE '%บาดแผลทางใจ%' THEN 'บาดแผลทางใจ/ประสบการณ์เลวร้ายในวัยเด็ก'
+    WHEN checklist_item LIKE '%คิดเกี่ยวกับความตาย%' OR checklist_item LIKE '%คิดทำร้ายตัวเอง%' THEN 'ความคิดฆ่าตัวตาย/ความคิดทำร้ายตัวเอง'
+    WHEN checklist_item LIKE '%ปัญหาการปรับตัว%' THEN 'ปัญหาการปรับตัว/ขาดทักษะทางสังคม'
+    WHEN checklist_item LIKE '%ปัญหาความสัมพันธ์ภายในครอบครัว%' THEN 'ปัญหาความสัมพันธ์ภายในครอบครัว'
+    WHEN checklist_item LIKE '%ปัญหาความสัมพันธ์กับคนรัก%' THEN 'ปัญหาความสัมพันธ์กับคนรัก'
+    WHEN checklist_item LIKE '%ปัญหาความสัมพันธ์เพื่อน%' THEN 'ปัญหาความสัมพันธ์เพื่อน'
+    WHEN checklist_item LIKE '%พฤติกรรมเสพติด%' THEN 'พฤติกรรมเสพติด'
+    WHEN checklist_item LIKE '%กลุ่มวิตกกังวล%' THEN 'ปัญหาสุขภาพจิตในกลุ่มวิตกกังวล'
+    WHEN checklist_item LIKE '%เจ็บป่วยทางกาย%' THEN 'มีอาการเจ็บป่วยทางกายจากปัญหาทางจิตใจ'
+    WHEN checklist_item LIKE '%ปัญหาการเรียน%' THEN 'ปัญหาการเรียน/หมดไฟในการเรียน'
+    WHEN checklist_item LIKE '%เข้าใจหรือพัฒนาตนเอง%' THEN 'ต้องการเข้าใจหรือพัฒนาตนเอง/ค้นหาเป้าหมายชีวิต'
+    WHEN checklist_item LIKE '%ปัญหาบุคลิกภาพ%' THEN 'ปัญหาบุคลิกภาพ'
     ELSE 'อื่น ๆ'
   END AS checklist_category,
   COUNT(*) AS checklist_count
-FROM users u
-JOIN user_conseling_room1 ucr ON u.personid = ucr.personid
-JOIN informationusers_room1 ir ON ucr.event_id = ir.event_id
-WHERE ucr.start_datetime BETWEEN $1 AND $2
-GROUP BY checklist_category;`;
+FROM SplitData
+GROUP BY checklist_category;
+`;
 
     const values = [startdate, enddate];
     client = await pool.connect();
