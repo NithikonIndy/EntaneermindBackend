@@ -188,23 +188,23 @@ export const events = async () => {
                 }
             }
 
-            const queryCalendar = await client.query(`SELECT * FROM admin_conseling_room1 arc WHERE arc.room ='conseling_room1'`);
-            const checkCalendar = queryCalendar.rows.map(row => row.event_id);
+        }
+        const queryCalendar = await client.query(`SELECT * FROM admin_conseling_room1 arc WHERE arc.room ='conseling_room1'`);
+        const checkCalendar = queryCalendar.rows.map(row => row.event_id);
 
-            for (const eventId of checkCalendar) {
-                if (!events.some(event => event.id === eventId)) {
-                    // EventId exists in the database but not in the current events from Google Calendar
-                    console.log("this is eventId", eventId);
+        for (const eventId of checkCalendar) {
+            if (!events.some(event => event.id === eventId)) {
+                // EventId exists in the database but not in the current events from Google Calendar
+                console.log("this is eventId", eventId);
 
-                    try {
-                        await client.query('DELETE FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
-                    } catch (deleteError) {
-                        console.error("Error deleting event from the database:", deleteError);
-                    }
+                try {
+                    await client.query('DELETE FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
+                } catch (deleteError) {
+                    console.error("Error deleting event from the database:", deleteError);
                 }
             }
-
         }
+
 
         //   return NextResponse.json(events);
         // return queryCalendar
@@ -226,15 +226,13 @@ export const events2 = async () => {
 
         if (!tokens) {
             console.log("error");
-
+            return new NextResponse('No tokens found!', { status: 404 });
         }
 
         oauth2Client.setCredentials(tokens);
 
-        const calendarId = "entaneermindfriend2@gmail.com"; // assuming req contains a calendarId property
-
+        const calendarId = "entaneermindfriend2@gmail.com";
         const room = "conseling_room2";
-
         const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
         // List events from the specified calendar
@@ -246,14 +244,12 @@ export const events2 = async () => {
             orderBy: 'startTime'
         });
 
-        // Check if response data and items are defined
         if (!response.data || !response.data.items) {
             console.error('No events found in the response', response);
             return new NextResponse('No events found!', { status: 404 });
         }
 
         const events = response.data.items;
-
 
         // Insert each event individually
         for (const event of events) {
@@ -273,37 +269,36 @@ export const events2 = async () => {
                     await client.query(text, values);
                 }
             }
-
-
-            const queryCalendar = await client.query(`SELECT * FROM admin_conseling_room1 arc WHERE arc.room ='conseling_room2'`);;
-            const checkCalendar = queryCalendar.rows.map(row => row.event_id);
-
-            for (const eventId of checkCalendar) {
-                if (!events.some(event => event.id === eventId)) {
-                    // EventId exists in the database but not in the current events from Google Calendar
-                    console.log("this is eventId", eventId);
-
-                    try {
-                        await client.query('DELETE FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
-                    } catch (deleteError) {
-                        console.error("Error deleting event from the database:", deleteError);
-                    }
-                }
-            }
-
         }
 
-        //   return NextResponse.json(events);
-        // return events
+        // Move queryCalendar outside the loop
+        const queryCalendar = await client.query(`SELECT * FROM admin_conseling_room1 arc WHERE arc.room ='conseling_room2'`);
+        const checkCalendar = queryCalendar.rows.map(row => row.event_id);
+
+        // Uncomment this block if you want to delete events from the database that no longer exist in Google Calendar
+        for (const eventId of checkCalendar) {
+            if (!events.some(event => event.id === eventId)) {
+                // EventId exists in the database but not in the current events from Google Calendar
+                console.log("this is eventId", eventId);
+                try {
+                    await client.query('DELETE FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
+                } catch (deleteError) {
+                    console.error("Error deleting event from the database:", deleteError);
+                }
+            }
+        }
+
+        // Return the result of the query
+        // return queryCalendar.rows;
     } catch (err) {
         console.error('Error executing query:', err);
-        // throw new Error('Failed to fetch data');
     } finally {
         if (client) {
-            client.release(); // ปลดปล่อยการเชื่อมต่อ
+            client.release();
         }
     }
 };
+
 
 export const createevent = async (request) => {
     try {
