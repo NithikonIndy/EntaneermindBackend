@@ -188,7 +188,7 @@ export const events = async () => {
                 }
             }
 
-            const queryCalendar = await client.query('SELECT event_id FROM admin_conseling_room1');
+            const queryCalendar = await client.query('SELECT event_id FROM admin_conseling_room1 acr where acr.room ="conseling_room1"');
             const checkCalendar = queryCalendar.rows.map(row => row.event_id);
 
             for (const eventId of checkCalendar) {
@@ -196,11 +196,11 @@ export const events = async () => {
                     // EventId exists in the database but not in the current events from Google Calendar
                     // console.log("this is eventId", eventId);
 
-                    // try {
-                    //     await client.query('DELETE FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
-                    // } catch (deleteError) {
-                    //     console.error("Error deleting event from the database:", deleteError);
-                    // }
+                    try {
+                        await client.query('DELETE FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
+                    } catch (deleteError) {
+                        console.error("Error deleting event from the database:", deleteError);
+                    }
                 }
             }
 
@@ -275,7 +275,7 @@ export const events2 = async () => {
             }
 
 
-            const queryCalendar = await client.query('SELECT event_id FROM admin_conseling_room1');
+            const queryCalendar = await client.query('SELECT event_id FROM admin_conseling_room1 acr where acr.room ="conseling_room2" ');
             const checkCalendar = queryCalendar.rows.map(row => row.event_id);
 
             for (const eventId of checkCalendar) {
@@ -283,11 +283,11 @@ export const events2 = async () => {
                     // EventId exists in the database but not in the current events from Google Calendar
                     // console.log("this is eventId", eventId);
 
-                    // try {
-                    //     await client.query('DELETE FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
-                    // } catch (deleteError) {
-                    //     console.error("Error deleting event from the database:", deleteError);
-                    // }
+                    try {
+                        await client.query('DELETE FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
+                    } catch (deleteError) {
+                        console.error("Error deleting event from the database:", deleteError);
+                    }
                 }
             }
 
