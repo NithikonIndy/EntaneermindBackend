@@ -196,11 +196,11 @@ export const events = async () => {
                     // EventId exists in the database but not in the current events from Google Calendar
                     console.log("this is eventId", eventId);
 
-                    // try {
-                    //     await client.query('DELETE FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
-                    // } catch (deleteError) {
-                    //     console.error("Error deleting event from the database:", deleteError);
-                    // }
+                    try {
+                        await client.query('DELETE FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
+                    } catch (deleteError) {
+                        console.error("Error deleting event from the database:", deleteError);
+                    }
                 }
             }
 
@@ -281,7 +281,7 @@ export const events2 = async () => {
             for (const eventId of checkCalendar) {
                 if (!events.some(event => event.id === eventId)) {
                     // EventId exists in the database but not in the current events from Google Calendar
-                    // console.log("this is eventId", eventId);
+                    console.log("this is eventId", eventId);
 
                     try {
                         await client.query('DELETE FROM admin_conseling_room1 WHERE event_id = $1', [eventId]);
